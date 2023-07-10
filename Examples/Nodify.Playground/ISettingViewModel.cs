@@ -1,23 +1,18 @@
-﻿namespace Nodify.Playground
+﻿namespace Nodify.Playground;
+
+public enum SettingsType
 {
-    public enum SettingsType
-    {
-        Boolean,
-        Number,
-        Option,
-        Point
-    }
+    Boolean,
+    Number,
+    Option,
+    Point
+}
 
-    public interface ISettingViewModel
-    {
-        string Name { get; }
-        
-        /// <summary>
-        /// Represents the content within the tooltip.
-        /// </summary>
-        string? Description { get; }
-        object? Value { get; set; }
+public interface ISettingViewModel
+{
+    string Name { get; }
+    string? Description { get; }
+    object? Value { get; set; }
 
-        SettingsType Type { get;}
-    }
+    SettingsType Type { get;}
 }

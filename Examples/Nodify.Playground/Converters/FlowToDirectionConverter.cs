@@ -1,29 +1,23 @@
-﻿using System;
+﻿using Nodify.Playground.Editor;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Nodify.Playground
+namespace Nodify.Playground.Converters;
+
+public class FlowToDirectionConverter : IValueConverter
 {
-    public class FlowToDirectionConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is ConnectorFlow flow)
-            {
-                return flow == ConnectorFlow.Output ? ConnectionDirection.Forward : ConnectionDirection.Backward;
-            }
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
+        => value is ConnectorFlow flow ? 
+           flow == ConnectorFlow.Output ? 
+           ConnectionDirection.Forward : 
+           ConnectionDirection.Backward : 
+           value;
 
-            return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is ConnectionDirection dir)
-            {
-                return dir == ConnectionDirection.Forward ? ConnectorFlow.Output : ConnectorFlow.Input;
-            }
-
-            return value;
-        }
-    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) 
+        => value is ConnectionDirection dir ? 
+           dir == ConnectionDirection.Forward ? 
+           ConnectorFlow.Output : 
+           ConnectorFlow.Input : 
+           value;
 }

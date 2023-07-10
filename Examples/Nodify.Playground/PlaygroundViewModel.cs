@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Nodify.Playground.Editor;
+using Nodify.Playground.Helpers;
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -105,7 +107,7 @@ namespace Nodify.Playground
                     for (int i = 0; i < connections.Count; i++)
                     {
                         var con = connections[i];
-                        schema.TryAddConnection(con.Input, con.Output);
+                        GraphSchema.TryAddConnection(con.Input, con.Output);
                     }
                 });
             }
@@ -114,7 +116,7 @@ namespace Nodify.Playground
                 for (int i = 0; i < connections.Count; i++)
                 {
                     var con = connections[i];
-                    schema.TryAddConnection(con.Input, con.Output);
+                    GraphSchema.TryAddConnection(con.Input, con.Output);
                 }
             }
         }

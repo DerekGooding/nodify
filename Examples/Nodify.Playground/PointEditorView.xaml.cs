@@ -1,12 +1,8 @@
 ﻿using System.Windows.Controls;
 
-namespace Nodify.Playground
+namespace Nodify.Playground;
+
+public partial class PointEditorView : UserControl
 {
-    public partial class PointEditorView : UserControl
-    {
-        public PointEditorView()
-        {
-            InitializeComponent();
-        }
-    }
+    public PointEditorView() => InitializeComponent();
 }

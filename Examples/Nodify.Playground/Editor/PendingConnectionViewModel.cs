@@ -1,51 +1,50 @@
-﻿namespace Nodify.Playground
+﻿namespace Nodify.Playground.Editor;
+
+public class PendingConnectionViewModel : ObservableObject
 {
-    public class PendingConnectionViewModel : ObservableObject
+    private NodifyEditorViewModel _graph = default!;
+    public NodifyEditorViewModel Graph
     {
-        private NodifyEditorViewModel _graph = default!;
-        public NodifyEditorViewModel Graph
-        {
-            get => _graph;
-            internal set => SetProperty(ref _graph, value);
-        }
+        get => _graph;
+        internal set => SetProperty(ref _graph, value);
+    }
 
-        private ConnectorViewModel? _source;
-        public ConnectorViewModel? Source
-        {
-            get => _source;
-            set => SetProperty(ref _source, value);
-        }
+    private ConnectorViewModel? _source;
+    public ConnectorViewModel? Source
+    {
+        get => _source;
+        set => SetProperty(ref _source, value);
+    }
 
-        private object? _previewTarget;
-        public object? PreviewTarget
+    private object? _previewTarget;
+    public object? PreviewTarget
+    {
+        get => _previewTarget;
+        set
         {
-            get => _previewTarget;
-            set
+            if (SetProperty(ref _previewTarget, value))
             {
-                if (SetProperty(ref _previewTarget, value))
-                {
-                    OnPreviewTargetChanged();
-                }
+                OnPreviewTargetChanged();
             }
         }
+    }
 
-        private string _previewText = "Drop on connector";
-        public string PreviewText
-        {
-            get => _previewText;
-            set => SetProperty(ref _previewText, value);
-        }
+    private string _previewText = "Drop on connector";
+    public string PreviewText
+    {
+        get => _previewText;
+        set => SetProperty(ref _previewText, value);
+    }
 
-        protected virtual void OnPreviewTargetChanged()
+    protected virtual void OnPreviewTargetChanged()
+    {
+        bool canConnect = PreviewTarget != null && GraphSchema.CanAddConnection(Source!, PreviewTarget);
+        PreviewText = PreviewTarget switch
         {
-            bool canConnect = PreviewTarget != null && Graph.Schema.CanAddConnection(Source!, PreviewTarget);
-            PreviewText = PreviewTarget switch
-            {
-                ConnectorViewModel con when con == Source => $"Can't connect to self",
-                ConnectorViewModel con => $"{(canConnect ? "Connect" : "Can't connect")} to {con.Title ?? "pin"}",
-                FlowNodeViewModel flow => $"{(canConnect ? "Connect" : "Can't connect")} to {flow.Title ?? "node"}",
-                _ => $"Drop on connector"
-            };
-        }
+            ConnectorViewModel con when con == Source => $"Can't connect to self",
+            ConnectorViewModel con => $"{(canConnect ? "Connect" : "Can't connect")} to {con.Title ?? "pin"}",
+            FlowNodeViewModel flow => $"{(canConnect ? "Connect" : "Can't connect")} to {flow.Title ?? "node"}",
+            _ => $"Drop on connector"
+        };
     }
 }

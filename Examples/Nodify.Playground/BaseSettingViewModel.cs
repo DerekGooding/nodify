@@ -1,40 +1,39 @@
 ﻿using System;
 
-namespace Nodify.Playground
+namespace Nodify.Playground;
+
+public class BaseSettingViewModel<T> : ObservableObject, ISettingViewModel
 {
-    public class BaseSettingViewModel<T> : ObservableObject, ISettingViewModel
+    public string Name { get; }
+    public string? Description { get; }
+
+    private object? _value;
+
+    object? ISettingViewModel.Value
     {
-        public string Name { get; }
-        public string? Description { get; }
+        get => _value;
+        set => SetProperty(ref _value, value);
+    }
 
-        private object? _value;
+    public SettingsType Type { get;}
 
-        object? ISettingViewModel.Value
+    public T Value
+    {
+        get => (T)((ISettingViewModel)this).Value!;
+        set => ((ISettingViewModel)this).Value = value;
+    }
+
+    public BaseSettingViewModel(string name, string? description = default)
+    {
+        Name = name;
+        Description = description;
+        Type = typeof(T) switch
         {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
-
-        public SettingsType Type { get;}
-
-        public T Value
-        {
-            get => (T)((ISettingViewModel)this).Value!;
-            set => ((ISettingViewModel)this).Value = value;
-        }
-
-        public BaseSettingViewModel(string name, string? description = default)
-        {
-            Name = name;
-            Description = description;
-            Type = typeof(T) switch
-            {
-                { } t when t == typeof(bool) => SettingsType.Boolean,
-                { } t when t == typeof(uint) || t == typeof(double) => SettingsType.Number,
-                { } t when t == typeof(PointEditor) => SettingsType.Point,
-                { IsEnum: true } => SettingsType.Option,
-                _ => throw new InvalidOperationException($"Type {typeof(T).Name} does not have a matching {nameof(SettingsType)}.")
-            };
-        }
+            { } t when t == typeof(bool) => SettingsType.Boolean,
+            { } t when t == typeof(uint) || t == typeof(double) => SettingsType.Number,
+            { } t when t == typeof(PointEditor) => SettingsType.Point,
+            { IsEnum: true } => SettingsType.Option,
+            _ => throw new InvalidOperationException($"Type {typeof(T).Name} does not have a matching {nameof(SettingsType)}.")
+        };
     }
 }

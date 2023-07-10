@@ -1,78 +1,75 @@
-﻿using System;
+﻿using Nodify.Playground.Editor;
+using System;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Nodify.Playground
+namespace Nodify.Playground;
+
+public static class CompositionTargetEx
 {
-    public static class CompositionTargetEx
+    private static TimeSpan _last = TimeSpan.Zero;
+    private static event Action<double>? FrameUpdating;
+
+    public static event Action<double> Rendering
     {
-        private static TimeSpan _last = TimeSpan.Zero;
-        private static event Action<double>? FrameUpdating;
-
-        public static event Action<double> Rendering
+        add
         {
-            add
+            if (FrameUpdating == null)
             {
-                if (FrameUpdating == null)
-                {
-                    CompositionTarget.Rendering += OnRendering;
-                }
-                FrameUpdating += value;
+                CompositionTarget.Rendering += OnRendering;
             }
-            remove
-            {
-                FrameUpdating -= value;
-                if (FrameUpdating == null)
-                {
-                    CompositionTarget.Rendering -= OnRendering;
-                }
-            }
+            FrameUpdating += value;
         }
-
-        private static void OnRendering(object? sender, EventArgs e)
+        remove
         {
-            RenderingEventArgs args = (RenderingEventArgs)e;
-            var renderingTime = args.RenderingTime;
-            if (renderingTime == _last)
-                return;
-
-            double fps = 1000 / (renderingTime - _last).TotalMilliseconds;
-            _last = renderingTime;
-            FrameUpdating?.Invoke(fps);
+            FrameUpdating -= value;
+            if (FrameUpdating == null)
+            {
+                CompositionTarget.Rendering -= OnRendering;
+            }
         }
     }
 
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private static void OnRendering(object? sender, EventArgs e)
     {
-        private readonly Random _rand = new Random();
+        RenderingEventArgs args = (RenderingEventArgs)e;
+        var renderingTime = args.RenderingTime;
+        if (renderingTime == _last)
+            return;
 
-        public MainWindow()
+        double fps = 1000 / (renderingTime - _last).TotalMilliseconds;
+        _last = renderingTime;
+        FrameUpdating?.Invoke(fps);
+    }
+}
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
+{
+    private readonly Random _rand = new();
+
+    public MainWindow()
+    {
+        InitializeComponent();
+
+        CompositionTargetEx.Rendering += OnRendering;
+    }
+
+    private void OnRendering(double fps) => FPSText.Text = fps.ToString("0");
+
+    private void BringIntoView_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is PlaygroundViewModel model)
         {
-            InitializeComponent();
+            NodifyObservableCollection<NodeViewModel> nodes = model.GraphViewModel.Nodes;
+            int index = _rand.Next(nodes.Count);
 
-            CompositionTargetEx.Rendering += OnRendering;
-        }
-
-        private void OnRendering(double fps)
-        {
-            FPSText.Text = fps.ToString("0");
-        }
-
-        private void BringIntoView_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is PlaygroundViewModel model)
+            if (nodes.Count > index)
             {
-                NodifyObservableCollection<NodeViewModel> nodes = model.GraphViewModel.Nodes;
-                int index = _rand.Next(nodes.Count);
-
-                if (nodes.Count > index)
-                {
-                    NodeViewModel node = nodes[index];
-                    EditorCommands.BringIntoView.Execute(node.Location, EditorView.Editor);
-                }
+                NodeViewModel node = nodes[index];
+                EditorCommands.BringIntoView.Execute(node.Location, EditorView.Editor);
             }
         }
     }
