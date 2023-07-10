@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nodify.Playground"
-        xmlns:shared="clr-namespace:Nodify;assembly=Nodify.Shared"
+        xmlns:shared="clr-namespace:Nodify.Shared;assembly=Nodify.Shared"
+        xmlns:c="clr-namespace:Nodify.Shared.Converters;assembly=Nodify.Shared"
         xmlns:nodify="https://miroiu.github.io/nodify"
         mc:Ignorable="d"
         Title="MainWindow"
@@ -12,8 +13,8 @@
         Width="1200">
 
     <Window.Resources>
-        <shared:DebugConverter x:Key="DebugConverter" />
-        <shared:ToStringConverter x:Key="ToStringConverter" />
+        <c:DebugConverter x:Key="DebugConverter" />
+        <c:ToStringConverter x:Key="ToStringConverter" />
     </Window.Resources>
 
     <Window.DataContext>

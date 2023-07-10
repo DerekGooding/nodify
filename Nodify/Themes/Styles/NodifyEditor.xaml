@@ -1,17 +1,19 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Nodify">
+                    xmlns:local="clr-namespace:Nodify"
+                    xmlns:h="clr-namespace:Nodify.Helpers"
+                    xmlns:connect="clr-namespace:Nodify.Connections">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <local:UnscaleTransformConverter x:Key="UnscaleTransformConverter" />
-    <local:UnscaleDoubleConverter x:Key="UnscaleDoubleConverter" />
+    <h:UnscaleTransformConverter x:Key="UnscaleTransformConverter" />
+    <h:UnscaleDoubleConverter x:Key="UnscaleDoubleConverter" />
 
     <DataTemplate x:Key="ConnectionTemplate">
-        <local:Connection />
+        <connect:Connection />
     </DataTemplate>
 
     <DataTemplate x:Key="PendingConnectionTemplate">
-        <local:PendingConnection IsTabStop="False" />
+        <connect:PendingConnection IsTabStop="False" />
     </DataTemplate>
 
     <Style x:Key="SelectionRectangleStyle"

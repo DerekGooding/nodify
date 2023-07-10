@@ -28,7 +28,7 @@ namespace Nodify.Playground
         public ICommand PerformanceTestCommand { get; }
         public ICommand ToggleConnectionsCommand { get; }
         public ICommand ResetCommand { get; }
-        public PlaygroundSettings Settings => PlaygroundSettings.Instance;
+        public static PlaygroundSettings Settings => PlaygroundSettings.Instance;
 
         private void ResetGraph()
         {
@@ -98,7 +98,6 @@ namespace Nodify.Playground
 
         private async Task ConnectNodes()
         {
-            var schema = new GraphSchema();
             var connections = RandomNodesGenerator.GenerateConnections(GraphViewModel.Nodes);
 
             if (Settings.AsyncLoading)
@@ -122,7 +121,7 @@ namespace Nodify.Playground
             }
         }
 
-        private async Task CopyToAsync(IList source, IList target)
+        private static async Task CopyToAsync(IList source, IList target)
         {
             if (Settings.AsyncLoading)
             {

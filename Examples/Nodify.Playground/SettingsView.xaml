@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Nodify.Playground"
-             xmlns:nodify="clr-namespace:Nodify;assembly=Nodify.Shared"
+             xmlns:nodify="clr-namespace:Nodify.Shared;assembly=Nodify.Shared"
+             xmlns:c="clr-namespace:Nodify.Shared.Converters;assembly=Nodify.Shared"
              d:DataContext="{d:DesignInstance Type=local:PlaygroundViewModel, IsDesignTimeCreatable=True}"
              d:Foreground="{DynamicResource ForegroundBrush}"
              d:Background="{DynamicResource PanelBackgroundBrush}"
@@ -25,7 +26,7 @@
                     DisplayMemberPath="Name"
                     SelectedValuePath="Value"
                     SelectedValue="{Binding Value, Mode=TwoWay}"
-                    ItemsSource="{Binding Value, Converter={nodify:EnumValuesConverter}}" />
+                    ItemsSource="{Binding Value, Converter={c:EnumValuesConverter}}" />
             </DataTemplate>
         </ItemsControl.Resources>
         <ItemsControl.ItemTemplate>

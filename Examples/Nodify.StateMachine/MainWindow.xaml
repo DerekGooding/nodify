@@ -4,15 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nodify.StateMachine"
-        xmlns:shared="clr-namespace:Nodify;assembly=Nodify.Shared"
-        xmlns:nodify="https://miroiu.github.io/nodify"
+        xmlns:shared="clr-namespace:Nodify.Shared;assembly=Nodify.Shared"
+        xmlns:c="clr-namespace:Nodify.Shared.Controls;assembly=Nodify.Shared"
+        xmlns:node="clr-namespace:Nodify.Nodes;assembly=Nodify"
+        xmlns:connect="clr-namespace:Nodify.Connections;assembly=Nodify"
+        xmlns:state="clr-namespace:Nodify.StateMachine"
+        xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
         ResizeMode="CanResizeWithGrip"
         mc:Ignorable="d"
         Title="State Machine Editor"
         Height="500"
         Width="930">
     <Window.DataContext>
-        <local:StateMachineViewModel />
+        <state:StateMachineViewModel />
     </Window.DataContext>
 
     <Window.Resources>
@@ -20,7 +24,7 @@
                              DataContext="{Binding}" />
         <shared:BindingProxy x:Key="BlackboardProxy"
                              DataContext="{Binding Blackboard}" />
-        <local:ConnectorOffsetConverter x:Key="ConnectorOffsetConverter" />
+        <state:ConnectorOffsetConverter x:Key="ConnectorOffsetConverter" />
     </Window.Resources>
 
     <Grid>
@@ -40,13 +44,13 @@
                              Grid.Column="1">
             <nodify:NodifyEditor.PendingConnectionTemplate>
                 <DataTemplate DataType="{x:Type local:TransitionViewModel}">
-                    <nodify:PendingConnection Source="{Binding Source, Mode=OneWayToSource}"
+                    <connect:PendingConnection Source="{Binding Source, Mode=OneWayToSource}"
                                               Target="{Binding Target, Mode=OneWayToSource}"
                                               StrokeDashArray=""
                                               EnablePreview="True">
-                        <nodify:PendingConnection.Template>
-                            <ControlTemplate TargetType="{x:Type nodify:PendingConnection}">
-                                <nodify:LineConnection Source="{TemplateBinding SourceAnchor}"
+                        <connect:PendingConnection.Template>
+                            <ControlTemplate TargetType="{x:Type connect:PendingConnection}">
+                                <connect:LineConnection Source="{TemplateBinding SourceAnchor}"
                                                               Target="{TemplateBinding TargetAnchor}"
                                                               StrokeThickness="{TemplateBinding StrokeThickness}"
                                                               StrokeDashArray="{TemplateBinding StrokeDashArray}"
@@ -55,14 +59,14 @@
                                                               SourceOffsetMode="Edge"
                                                               TargetOffsetMode="None" />
                             </ControlTemplate>
-                        </nodify:PendingConnection.Template>
-                    </nodify:PendingConnection>
+                        </connect:PendingConnection.Template>
+                    </connect:PendingConnection>
                 </DataTemplate>
             </nodify:NodifyEditor.PendingConnectionTemplate>
 
             <nodify:NodifyEditor.ConnectionTemplate>
-                <DataTemplate DataType="{x:Type local:TransitionViewModel}">
-                    <nodify:LineConnection Source="{Binding Source.Anchor}"
+                <DataTemplate DataType="{x:Type state:TransitionViewModel}">
+                    <connect:LineConnection Source="{Binding Source.Anchor}"
                                                   Target="{Binding Target.Anchor}"
                                                   SourceOffset="{Binding Source.Size, Converter={StaticResource ConnectorOffsetConverter}, ConverterParameter=5}"
                                                   TargetOffset="{Binding Target.Size, Converter={StaticResource ConnectorOffsetConverter}, ConverterParameter=5}"
@@ -70,9 +74,9 @@
                                                   SourceOffsetMode="Edge"
                                                   TargetOffsetMode="Edge"
                                                   Tag="{Binding}">
-                        <nodify:LineConnection.Style>
-                            <Style TargetType="{x:Type nodify:LineConnection}"
-                                   BasedOn="{StaticResource {x:Type nodify:LineConnection}}">
+                        <connect:LineConnection.Style>
+                            <Style TargetType="{x:Type connect:LineConnection}"
+                                   BasedOn="{StaticResource {x:Type connect:LineConnection}}">
                                 <Setter Property="StrokeThickness"
                                         Value="3" />
                                 <Style.Triggers>
@@ -85,34 +89,34 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </nodify:LineConnection.Style>
-                        <nodify:LineConnection.ContextMenu>
+                        </connect:LineConnection.Style>
+                        <connect:LineConnection.ContextMenu>
                             <ContextMenu DataContext="{Binding DataContext, Source={StaticResource EditorProxy}}">
                                 <MenuItem Header="_Delete"
                                           Icon="{StaticResource DeleteIcon}"
                                           Command="{Binding DeleteTransitionCommand}"
                                           CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
                             </ContextMenu>
-                        </nodify:LineConnection.ContextMenu>
-                    </nodify:LineConnection>
+                        </connect:LineConnection.ContextMenu>
+                    </connect:LineConnection>
                 </DataTemplate>
             </nodify:NodifyEditor.ConnectionTemplate>
 
             <nodify:NodifyEditor.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:StateViewModel}">
+                <DataTemplate DataType="{x:Type state:StateViewModel}">
                     <!--If IsConnected is false, Anchor won't be updated-->
-                    <nodify:StateNode Content="{Binding}"
+                    <node:StateNode Content="{Binding}"
                                       IsConnected="True"
                                       Anchor="{Binding Anchor, Mode=OneWayToSource}">
-                        <nodify:StateNode.ContentTemplate>
+                        <node:StateNode.ContentTemplate>
                             <DataTemplate DataType="{x:Type local:StateViewModel}">
                                 <shared:EditableTextBlock Text="{Binding Name}"
                                                           IsEditing="{Binding IsRenaming}"
                                                           IsEditable="{Binding IsEditable}"
                                                           MaxLength="30" />
                             </DataTemplate>
-                        </nodify:StateNode.ContentTemplate>
-                        <nodify:StateNode.Style>
+                        </node:StateNode.ContentTemplate>
+                        <node:StateNode.Style>
                             <Style TargetType="{x:Type nodify:StateNode}"
                                    BasedOn="{StaticResource {x:Type nodify:StateNode}}">
                                 <Style.Triggers>
@@ -128,8 +132,8 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </nodify:StateNode.Style>
-                    </nodify:StateNode>
+                        </node:StateNode.Style>
+                    </node:StateNode>
                 </DataTemplate>
             </nodify:NodifyEditor.ItemTemplate>
 

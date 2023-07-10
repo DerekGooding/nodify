@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Nodify.Calculator"
              xmlns:shared="clr-namespace:Nodify;assembly=Nodify.Shared"
+             xmlns:c="clr-namespace:Nodify.Shared.Converters;assembly=Nodify.Shared"
              mc:Ignorable="d"
              MinWidth="250"
              d:DesignHeight="400"
@@ -23,7 +24,7 @@
             Background="{DynamicResource Node.BackgroundBrush}"
             BorderBrush="{StaticResource NodifyEditor.SelectionRectangleStrokeBrush}"
             BorderThickness="2"
-            Visibility="{Binding IsVisible, Converter={shared:BooleanToVisibilityConverter}}">
+            Visibility="{Binding IsVisible, Converter={c:BooleanToVisibilityConverter}}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

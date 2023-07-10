@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Nodify">
+                    xmlns:shared="clr-namespace:Nodify.Shared.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Nodify.Shared;component/Themes/Controls.xaml" />
@@ -8,7 +8,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="EditableTextBlockBaseStyle"
-           TargetType="{x:Type local:EditableTextBlock}">
+           TargetType="{x:Type shared:EditableTextBlock}">
         <Setter Property="Background"
                 Value="Transparent" />
         <Setter Property="BorderThickness"
@@ -27,7 +27,7 @@
                 Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:EditableTextBlock}">
+                <ControlTemplate TargetType="{x:Type shared:EditableTextBlock}">
                     <Grid VerticalAlignment="{TemplateBinding VerticalAlignment}"
                           HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
                         <TextBlock Text="{Binding Text, ElementName=PART_TextBox}"
@@ -77,13 +77,13 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:EditableTextBlock}"
+    <Style TargetType="{x:Type shared:EditableTextBlock}"
            BasedOn="{StaticResource EditableTextBlockBaseStyle}" />
 
-    <Style TargetType="{x:Type local:TabControlEx}">
+    <Style TargetType="{x:Type shared:TabControlEx}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:TabControlEx}">
+                <ControlTemplate TargetType="{x:Type shared:TabControlEx}">
                     <Grid KeyboardNavigation.TabNavigation="Local" 
                           SnapsToDevicePixels="true"
                           ClipToBounds="true">
@@ -147,7 +147,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:TabItemEx}">
+    <Style TargetType="{x:Type shared:TabItemEx}">
         <Setter Property="Background" 
                 Value="{DynamicResource BackgroundBrush}"/>
         <Setter Property="Foreground"
@@ -169,7 +169,7 @@
                 Value="7"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:TabItemEx}">
+                <ControlTemplate TargetType="{x:Type shared:TabItemEx}">
                     <Border x:Name="mBorder"
                             BorderThickness="1" 
                             CornerRadius="5 5 0 0"
@@ -177,7 +177,7 @@
                             Padding="{TemplateBinding Padding}">
                         <Grid>
                             <StackPanel Orientation="Horizontal">
-                                <local:EditableTextBlock Text="{TemplateBinding Header}"
+                                <shared:EditableTextBlock Text="{TemplateBinding Header}"
                                                          Foreground="{TemplateBinding Foreground}"/>
                                 <Button x:Name="mCloseBtn" 
                                         Command="{TemplateBinding CloseTabCommand}" 

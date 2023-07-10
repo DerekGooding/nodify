@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nodify.Calculator"
-        xmlns:shared="clr-namespace:Nodify;assembly=Nodify.Shared"
+        xmlns:shared="clr-namespace:Nodify.Shared;assembly=Nodify.Shared"
+        xmlns:c="clr-namespace:Nodify.Shared.Controls;assembly=Nodify.Shared"
         Background="{DynamicResource NodifyEditor.BackgroundBrush}"
         Foreground="{DynamicResource ForegroundBrush}"
         mc:Ignorable="d"
@@ -38,13 +39,13 @@
     </Window.Resources>
     
     <Grid>
-        <shared:TabControlEx ItemsSource="{Binding Editors}"
+        <c:TabControlEx ItemsSource="{Binding Editors}"
                              SelectedItem="{Binding SelectedEditor}" 
                              AddTabCommand="{Binding AddEditorCommand}"
                              AutoScrollToEnd="{Binding AutoSelectNewEditor}">
-            <shared:TabControlEx.ItemContainerStyle>
-                <Style TargetType="{x:Type shared:TabItemEx}" 
-                       BasedOn="{StaticResource {x:Type shared:TabItemEx}}">
+            <c:TabControlEx.ItemContainerStyle>
+                <Style TargetType="{x:Type c:TabItemEx}" 
+                       BasedOn="{StaticResource {x:Type c:TabItemEx}}">
                     <Setter Property="Header" 
                             Value="{Binding Name}"/>
                     <Setter Property="CloseTabCommand" 
@@ -52,8 +53,8 @@
                     <Setter Property="CloseTabCommandParameter" 
                             Value="{Binding Id}"/>
                 </Style>
-            </shared:TabControlEx.ItemContainerStyle>
-        </shared:TabControlEx>
+            </c:TabControlEx.ItemContainerStyle>
+        </c:TabControlEx>
         
         <Expander Header="Click to hide/show"
                   IsExpanded="True"

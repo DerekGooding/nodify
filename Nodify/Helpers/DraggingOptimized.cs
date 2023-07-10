@@ -3,87 +3,83 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Nodify
+namespace Nodify.Helpers;
+
+/// <summary>
+/// Commits the position changes at the end of the operation. Updates the RenderTransform to preview the container position.
+/// </summary>
+internal class DraggingOptimized : IDraggingStrategy
 {
-    /// <summary>
-    /// Commits the position changes at the end of the operation. Updates the RenderTransform to preview the container position.
-    /// </summary>
-    internal class DraggingOptimized : IDraggingStrategy
+    private readonly NodifyEditor _editor;
+    private Vector _dragAccumulator;
+    private readonly IList<ItemContainer> _selectedContainers;
+
+    public DraggingOptimized(NodifyEditor editor)
     {
-        private readonly NodifyEditor _editor;
-        private Vector _dragAccumulator;
-        private readonly IList<ItemContainer> _selectedContainers;
+        _editor = editor;
+        _selectedContainers = _editor.SelectedContainers.Where(c => c.IsDraggable).ToList();
+    }
 
-        public DraggingOptimized(NodifyEditor editor)
+    public void Abort(Vector change)
+    {
+        for (int i = 0; i < _selectedContainers.Count; i++)
         {
-            _editor = editor;
-            _selectedContainers = _editor.SelectedContainers.Where(c => c.IsDraggable).ToList();
+            ItemContainer container = _selectedContainers[i];
+            var r = (TranslateTransform)container.RenderTransform;
+
+            r.X = 0;
+            r.Y = 0;
+
+            container.OnPreviewLocationChanged(container.Location);
         }
 
-        public void Abort(Vector change)
+        _selectedContainers.Clear();
+    }
+
+    public void End(Vector change)
+    {
+        for (int i = 0; i < _selectedContainers.Count; i++)
         {
-            for (var i = 0; i < _selectedContainers.Count; i++)
+            ItemContainer container = _selectedContainers[i];
+            var r = (TranslateTransform)container.RenderTransform;
+
+            Point result = container.Location + new Vector(r.X, r.Y);
+
+            // Correct the final position
+            if (NodifyEditor.EnableSnappingCorrection)
+            {
+                result.X = (int)result.X / _editor.GridCellSize * _editor.GridCellSize;
+                result.Y = (int)result.Y / _editor.GridCellSize * _editor.GridCellSize;
+            }
+
+            container.Location = result;
+
+            r.X = 0;
+            r.Y = 0;
+        }
+
+        _selectedContainers.Clear();
+    }
+
+    public void Start(Vector change) => _dragAccumulator = new Vector(0, 0);
+
+    public void Update(Vector change)
+    {
+        _dragAccumulator += change;
+        var delta = new Vector((int)_dragAccumulator.X / _editor.GridCellSize * _editor.GridCellSize, (int)_dragAccumulator.Y / _editor.GridCellSize * _editor.GridCellSize);
+        _dragAccumulator -= delta;
+
+        if (delta.X != 0 || delta.Y != 0)
+        {
+            for (int i = 0; i < _selectedContainers.Count; i++)
             {
                 ItemContainer container = _selectedContainers[i];
                 var r = (TranslateTransform)container.RenderTransform;
 
-                r.X = 0;
-                r.Y = 0;
+                r.X += delta.X; // Snapping without correction
+                r.Y += delta.Y; // Snapping without correction
 
-                container.OnPreviewLocationChanged(container.Location);
-            }
-
-            _selectedContainers.Clear();
-        }
-
-        public void End(Vector change)
-        {
-            for (var i = 0; i < _selectedContainers.Count; i++)
-            {
-                ItemContainer container = _selectedContainers[i];
-                var r = (TranslateTransform)container.RenderTransform;
-
-                Point result = container.Location + new Vector(r.X, r.Y);
-
-                // Correct the final position
-                if (NodifyEditor.EnableSnappingCorrection)
-                {
-                    result.X = (int)result.X / _editor.GridCellSize * _editor.GridCellSize;
-                    result.Y = (int)result.Y / _editor.GridCellSize * _editor.GridCellSize;
-                }
-
-                container.Location = result;
-
-                r.X = 0;
-                r.Y = 0;
-            }
-
-            _selectedContainers.Clear();
-        }
-
-        public void Start(Vector change)
-        {
-            _dragAccumulator = new Vector(0, 0);
-        }
-
-        public void Update(Vector change)
-        {
-            _dragAccumulator += change;
-            var delta = new Vector((int)_dragAccumulator.X / _editor.GridCellSize * _editor.GridCellSize, (int)_dragAccumulator.Y / _editor.GridCellSize * _editor.GridCellSize);
-            _dragAccumulator -= delta;
-
-            if (delta.X != 0 || delta.Y != 0)
-            {
-                for (var i = 0; i < _selectedContainers.Count; i++)
-                {
-                    ItemContainer container = _selectedContainers[i];
-                    var r = (TranslateTransform)container.RenderTransform;
-
-                    r.X += delta.X; // Snapping without correction
-                    r.Y += delta.Y; // Snapping without correction
-
-                    container.OnPreviewLocationChanged(container.Location + new Vector(r.X, r.Y));
-                }
+                container.OnPreviewLocationChanged(container.Location + new Vector(r.X, r.Y));
             }
         }
     }

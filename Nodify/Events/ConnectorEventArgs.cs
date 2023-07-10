@@ -1,38 +1,38 @@
-﻿using System;
+﻿using Nodify.Connections;
+using System;
 using System.Windows;
 
-namespace Nodify
+namespace Nodify.Events;
+
+/// <summary>
+/// Represents the method that will handle <see cref="Connector"/> related routed events.
+/// </summary>
+/// <param name="sender">The object where the event handler is attached.</param>
+/// <param name="e">The event data.</param>
+public delegate void ConnectorEventHandler(object sender, ConnectorEventArgs e);
+
+/// <summary>
+/// Provides data for <see cref="Connections.Connector"/> related routed events.
+/// </summary>
+public class ConnectorEventArgs : RoutedEventArgs
 {
     /// <summary>
-    /// Represents the method that will handle <see cref="Connector"/> related routed events.
+    /// Initializes a new instance of the <see cref="ConnectorEventArgs"/> class using the specified <see cref="Connector"/>.
     /// </summary>
-    /// <param name="sender">The object where the event handler is attached.</param>
-    /// <param name="e">The event data.</param>
-    public delegate void ConnectorEventHandler(object sender, ConnectorEventArgs e);
+    /// <param name="connector">The <see cref="FrameworkElement.DataContext"/> of a related <see cref="Connections.Connector"/>.</param>
+    public ConnectorEventArgs(object connector)
+        => Connector = connector;
 
     /// <summary>
-    /// Provides data for <see cref="Nodify.Connector"/> related routed events.
+    /// Gets or sets the <see cref="Connector.Anchor"/> of the <see cref="Connections.Connector"/> associated with this event.
     /// </summary>
-    public class ConnectorEventArgs : RoutedEventArgs
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConnectorEventArgs"/> class using the specified <see cref="Connector"/>.
-        /// </summary>
-        /// <param name="connector">The <see cref="FrameworkElement.DataContext"/> of a related <see cref="Nodify.Connector"/>.</param>
-        public ConnectorEventArgs(object connector)
-            => Connector = connector;
+    public Point Anchor { get; set; }
 
-        /// <summary>
-        /// Gets or sets the <see cref="Nodify.Connector.Anchor"/> of the <see cref="Nodify.Connector"/> associated with this event.
-        /// </summary>
-        public Point Anchor { get; set; }
+    /// <summary>
+    /// Gets the <see cref="FrameworkElement.DataContext"/> of the <see cref="Connections.Connector"/> associated with this event.
+    /// </summary>
+    public object Connector { get; }
 
-        /// <summary>
-        /// Gets the <see cref="FrameworkElement.DataContext"/> of the <see cref="Nodify.Connector"/> associated with this event.
-        /// </summary>
-        public object Connector { get; }
-
-        protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
-            => ((ConnectorEventHandler)genericHandler)(genericTarget, this);
-    }
+    protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
+        => ((ConnectorEventHandler)genericHandler)(genericTarget, this);
 }

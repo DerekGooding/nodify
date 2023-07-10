@@ -3,21 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Nodify.Playground"
-             xmlns:nodify="https://miroiu.github.io/nodify"
-             xmlns:shared="clr-namespace:Nodify;assembly=Nodify.Shared"
+             xmlns:editor="clr-namespace:Nodify.Playground.Editor"
+             xmlns:playground="clr-namespace:Nodify.Playground"
+             xmlns:lc="clr-namespace:Nodify.Playground.Converters"
+             xmlns:connect="clr-namespace:Nodify.Connections;assembly=Nodify"
+             xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
+             xmlns:node="clr-namespace:Nodify.Nodes;assembly=Nodify"
+             xmlns:c="clr-namespace:Nodify.Shared.Converters;assembly=Nodify.Shared"
              mc:Ignorable="d"
              Background="{DynamicResource NodifyEditor.BackgroundBrush}"
              d:DesignHeight="450"
              d:DesignWidth="800">
 
     <UserControl.DataContext>
-        <local:NodifyEditorViewModel />
+        <editor:NodifyEditorViewModel />
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <shared:RandomBrushConverter x:Key="RandomBrushConverter" />
-        <local:FlowToDirectionConverter x:Key="FlowToDirectionConverter" />
+        <c:RandomBrushConverter x:Key="RandomBrushConverter" />
+        <lc:FlowToDirectionConverter x:Key="FlowToDirectionConverter" />
 
         <GeometryDrawing x:Key="SmallGridGeometry"
                          Geometry="M0,0 L0,1 0.03,1 0.03,0.03 1,0.03 1,0 Z"
@@ -30,7 +34,7 @@
         <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
                       TileMode="Tile"
                       ViewportUnits="Absolute"
-                      Viewport="{Binding GridSpacing, Source={x:Static local:EditorSettings.Instance}, Converter={local:UIntToRectConverter}}"
+                      Viewport="{Binding GridSpacing, Source={x:Static playground:EditorSettings.Instance}, Converter={lc:UIntToRectConverter}}"
                       Transform="{Binding ViewportTransform, ElementName=Editor}"
                       Drawing="{StaticResource SmallGridGeometry}" />
 
@@ -38,7 +42,7 @@
                       TileMode="Tile"
                       ViewportUnits="Absolute"
                       Opacity="0.5"
-                      Viewport="{Binding GridSpacing, Source={x:Static local:EditorSettings.Instance}, Converter={local:UIntToRectConverter  Multiplier=10}}"
+                      Viewport="{Binding GridSpacing, Source={x:Static playground:EditorSettings.Instance}, Converter={lc:UIntToRectConverter  Multiplier=10}}"
                       Transform="{Binding ViewportTransform, ElementName=Editor}"
                       Drawing="{StaticResource LargeGridGeometry}" />
 
@@ -55,15 +59,15 @@
                              Duration="0:0:0.3" From="1" To="0.3"  />
         </Storyboard>
 
-        <Style x:Key="ConnectionStyle" TargetType="{x:Type nodify:BaseConnection}">
+        <Style x:Key="ConnectionStyle" TargetType="{x:Type connect:BaseConnection}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Input.Shape}" 
-                             Value="{x:Static local:ConnectorShape.Square}">
+                             Value="{x:Static editor:ConnectorShape.Square}">
                     <Setter Property="Stroke" Value="{StaticResource SquareConnectorColor}"/>
                     <Setter Property="Fill" Value="{StaticResource SquareConnectorColor}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Input.Shape}" 
-                             Value="{x:Static local:ConnectorShape.Triangle}">
+                             Value="{x:Static editor:ConnectorShape.Triangle}">
                     <Setter Property="Stroke" Value="{StaticResource TriangleConnectorColor}"/>
                     <Setter Property="Fill" Value="{StaticResource TriangleConnectorColor}"/>
                 </DataTrigger>
@@ -86,28 +90,28 @@
             <Setter Property="Target" Value="{Binding Input.Anchor}" />
             <Setter Property="SplitCommand" Value="{Binding SplitCommand}" />
             <Setter Property="DisconnectCommand" Value="{Binding DisconnectCommand}" />
-            <Setter Property="SourceOffsetMode" Value="{Binding ConnectionSourceOffsetMode, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="TargetOffsetMode" Value="{Binding ConnectionTargetOffsetMode, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="SourceOffset" Value="{Binding ConnectionSourceOffset.Size, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="TargetOffset" Value="{Binding ConnectionTargetOffset.Size, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="ArrowSize" Value="{Binding ConnectionArrowSize.Size, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="ArrowEnds" Value="{Binding ArrowHeadEnds, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="ArrowShape" Value="{Binding ArrowHeadShape, Source={x:Static local:EditorSettings.Instance}}" />
-            <Setter Property="Spacing" Value="{Binding ConnectionSpacing, Source={x:Static local:EditorSettings.Instance}}" />
+            <Setter Property="SourceOffsetMode" Value="{Binding ConnectionSourceOffsetMode, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="TargetOffsetMode" Value="{Binding ConnectionTargetOffsetMode, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="SourceOffset" Value="{Binding ConnectionSourceOffset.Size, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="TargetOffset" Value="{Binding ConnectionTargetOffset.Size, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="ArrowSize" Value="{Binding ConnectionArrowSize.Size, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="ArrowEnds" Value="{Binding ArrowHeadEnds, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="ArrowShape" Value="{Binding ArrowHeadShape, Source={x:Static playground:EditorSettings.Instance}}" />
+            <Setter Property="Spacing" Value="{Binding ConnectionSpacing, Source={x:Static playground:EditorSettings.Instance}}" />
             <Setter Property="Direction" Value="{Binding Output.Flow, Converter={StaticResource FlowToDirectionConverter}}" />
         </Style>
 
         <DataTemplate x:Key="CircuitConnectionTemplate">
-            <nodify:CircuitConnection Angle="{Binding CircuitConnectionAngle, Source={x:Static local:EditorSettings.Instance}}"
+            <connect:CircuitConnection Angle="{Binding CircuitConnectionAngle, Source={x:Static playground:EditorSettings.Instance}}"
                                       Style="{StaticResource ConnectionStyle}" />
         </DataTemplate>
 
         <DataTemplate x:Key="ConnectionTemplate">
-            <nodify:Connection Style="{StaticResource ConnectionStyle}" />
+            <connect:Connection Style="{StaticResource ConnectionStyle}" />
         </DataTemplate>
 
         <DataTemplate x:Key="LineConnectionTemplate">
-            <nodify:LineConnection Style="{StaticResource ConnectionStyle}" />
+            <connect:LineConnection Style="{StaticResource ConnectionStyle}" />
         </DataTemplate>
 
         <ControlTemplate x:Key="SquareConnector" TargetType="Control">
@@ -162,21 +166,21 @@
                              PendingConnection="{Binding PendingConnection}"
                              SelectedItems="{Binding SelectedNodes}"
                              DisconnectConnectorCommand="{Binding DisconnectConnectorCommand}"
-                             ViewportLocation="{Binding Location.Value, Source={x:Static local:EditorSettings.Instance}}"
+                             ViewportLocation="{Binding Location.Value, Source={x:Static playground:EditorSettings.Instance}}"
                              ViewportSize="{Binding ViewportSize, Mode=OneWayToSource}"
-                             ViewportZoom="{Binding Zoom, Source={x:Static local:EditorSettings.Instance}}"
-                             MinViewportZoom="{Binding MinZoom, Source={x:Static local:EditorSettings.Instance}}"
-                             MaxViewportZoom="{Binding MaxZoom, Source={x:Static local:EditorSettings.Instance}}"
-                             AutoPanSpeed="{Binding AutoPanningSpeed, Source={x:Static local:EditorSettings.Instance}}"
-                             AutoPanEdgeDistance="{Binding AutoPanningEdgeDistance, Source={x:Static local:EditorSettings.Instance}}"
-                             GridCellSize="{Binding GridSpacing, Source={x:Static local:EditorSettings.Instance}}"
-                             EnableRealtimeSelection="{Binding EnableRealtimeSelection, Source={x:Static local:EditorSettings.Instance}}"
-                             DisableAutoPanning="{Binding DisableAutoPanning, Source={x:Static local:EditorSettings.Instance}}"
-                             DisablePanning="{Binding DisablePanning, Source={x:Static local:EditorSettings.Instance}}"
-                             DisableZooming="{Binding DisableZooming, Source={x:Static local:EditorSettings.Instance}}"
-                             DisplayConnectionsOnTop="{Binding DisplayConnectionsOnTop, Source={x:Static local:EditorSettings.Instance}}"
-                             BringIntoViewSpeed="{Binding BringIntoViewSpeed, Source={x:Static local:EditorSettings.Instance}}"
-                             BringIntoViewMaxDuration="{Binding BringIntoViewMaxDuration, Source={x:Static local:EditorSettings.Instance}}"
+                             ViewportZoom="{Binding Zoom, Source={x:Static playground:EditorSettings.Instance}}"
+                             MinViewportZoom="{Binding MinZoom, Source={x:Static playground:EditorSettings.Instance}}"
+                             MaxViewportZoom="{Binding MaxZoom, Source={x:Static playground:EditorSettings.Instance}}"
+                             AutoPanSpeed="{Binding AutoPanningSpeed, Source={x:Static playground:EditorSettings.Instance}}"
+                             AutoPanEdgeDistance="{Binding AutoPanningEdgeDistance, Source={x:Static playground:EditorSettings.Instance}}"
+                             GridCellSize="{Binding GridSpacing, Source={x:Static playground:EditorSettings.Instance}}"
+                             EnableRealtimeSelection="{Binding EnableRealtimeSelection, Source={x:Static playground:EditorSettings.Instance}}"
+                             DisableAutoPanning="{Binding DisableAutoPanning, Source={x:Static playground:EditorSettings.Instance}}"
+                             DisablePanning="{Binding DisablePanning, Source={x:Static playground:EditorSettings.Instance}}"
+                             DisableZooming="{Binding DisableZooming, Source={x:Static playground:EditorSettings.Instance}}"
+                             DisplayConnectionsOnTop="{Binding DisplayConnectionsOnTop, Source={x:Static playground:EditorSettings.Instance}}"
+                             BringIntoViewSpeed="{Binding BringIntoViewSpeed, Source={x:Static playground:EditorSettings.Instance}}"
+                             BringIntoViewMaxDuration="{Binding BringIntoViewMaxDuration, Source={x:Static playground:EditorSettings.Instance}}"
                              SelectionRectangleStyle="{StaticResource SelectionRectangleStyle}">
             <nodify:NodifyEditor.Style>
                 <Style TargetType="{x:Type nodify:NodifyEditor}"
@@ -184,17 +188,17 @@
                     <Setter Property="ConnectionTemplate"
                             Value="{StaticResource ConnectionTemplate}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ShowGridLines, Source={x:Static local:PlaygroundSettings.Instance}}"
+                        <DataTrigger Binding="{Binding ShowGridLines, Source={x:Static playground:PlaygroundSettings.Instance}}"
                                      Value="True">
                             <Setter Property="Background"
                                     Value="{StaticResource SmallGridLinesDrawingBrush}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ConnectionStyle, Mode=TwoWay, Source={x:Static local:EditorSettings.Instance}}"
+                        <DataTrigger Binding="{Binding ConnectionStyle, Mode=TwoWay, Source={x:Static playground:EditorSettings.Instance}}"
                                      Value="Line">
                             <Setter Property="ConnectionTemplate"
                                     Value="{StaticResource LineConnectionTemplate}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ConnectionStyle, Mode=TwoWay, Source={x:Static local:EditorSettings.Instance}}"
+                        <DataTrigger Binding="{Binding ConnectionStyle, Mode=TwoWay, Source={x:Static playground:EditorSettings.Instance}}"
                                      Value="Circuit">
                             <Setter Property="ConnectionTemplate"
                                     Value="{StaticResource CircuitConnectionTemplate}" />
@@ -211,8 +215,8 @@
             </nodify:NodifyEditor.InputBindings>
 
             <nodify:NodifyEditor.Resources>
-                <Style TargetType="{x:Type nodify:PendingConnection}"
-                       BasedOn="{StaticResource {x:Type nodify:PendingConnection}}">
+                <Style TargetType="{x:Type connect:PendingConnection}"
+                       BasedOn="{StaticResource {x:Type connect:PendingConnection}}">
                     <Setter Property="CompletedCommand"
                             Value="{Binding Graph.CreateConnectionCommand}" />
                     <Setter Property="Source"
@@ -224,50 +228,50 @@
                     <Setter Property="Content"
                             Value="{Binding PreviewText}" />
                     <Setter Property="EnablePreview"
-                            Value="{Binding EnablePendingConnectionPreview, Source={x:Static local:EditorSettings.Instance}}" />
+                            Value="{Binding EnablePendingConnectionPreview, Source={x:Static playground:EditorSettings.Instance}}" />
                     <Setter Property="EnableSnapping"
-                            Value="{Binding EnablePendingConnectionSnapping, Source={x:Static local:EditorSettings.Instance}}" />
+                            Value="{Binding EnablePendingConnectionSnapping, Source={x:Static playground:EditorSettings.Instance}}" />
                     <Setter Property="AllowOnlyConnectors"
-                            Value="{Binding AllowConnectingToConnectorsOnly, Source={x:Static local:EditorSettings.Instance}}" />
+                            Value="{Binding AllowConnectingToConnectorsOnly, Source={x:Static playground:EditorSettings.Instance}}" />
                     <Setter Property="Direction"
                             Value="{Binding Source.Flow, Converter={StaticResource FlowToDirectionConverter}}" />
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type nodify:PendingConnection}">
+                            <ControlTemplate TargetType="{x:Type connect:PendingConnection}">
                                 <Canvas>
-                                    <nodify:Connection Source="{TemplateBinding SourceAnchor}"
+                                    <connect:Connection Source="{TemplateBinding SourceAnchor}"
                                                        Target="{TemplateBinding TargetAnchor}"
                                                        Direction="{TemplateBinding Direction}"
                                                        StrokeThickness="{TemplateBinding StrokeThickness}"
-                                                       SourceOffset="{Binding ConnectionSourceOffset.Size, Source={x:Static local:EditorSettings.Instance}}"
-                                                       TargetOffset="{Binding ConnectionTargetOffset.Size, Source={x:Static local:EditorSettings.Instance}}"
-                                                       SourceOffsetMode="{Binding ConnectionSourceOffsetMode, Source={x:Static local:EditorSettings.Instance}}"
+                                                       SourceOffset="{Binding ConnectionSourceOffset.Size, Source={x:Static playground:EditorSettings.Instance}}"
+                                                       TargetOffset="{Binding ConnectionTargetOffset.Size, Source={x:Static playground:EditorSettings.Instance}}"
+                                                       SourceOffsetMode="{Binding ConnectionSourceOffsetMode, Source={x:Static playground:EditorSettings.Instance}}"
                                                        TargetOffsetMode="None"
-                                                       ArrowSize="{Binding ConnectionArrowSize.Size, Source={x:Static local:EditorSettings.Instance}}"
-                                                       ArrowEnds="{Binding ArrowHeadEnds, Source={x:Static local:EditorSettings.Instance}}"
-                                                       ArrowShape="{Binding ArrowHeadShape, Source={x:Static local:EditorSettings.Instance}}"
-                                                       Spacing="{Binding ConnectionSpacing, Source={x:Static local:EditorSettings.Instance}}">
-                                        <nodify:Connection.Style>
-                                            <Style TargetType="nodify:Connection" BasedOn="{StaticResource {x:Type nodify:Connection}}">
+                                                       ArrowSize="{Binding ConnectionArrowSize.Size, Source={x:Static playground:EditorSettings.Instance}}"
+                                                       ArrowEnds="{Binding ArrowHeadEnds, Source={x:Static playground:EditorSettings.Instance}}"
+                                                       ArrowShape="{Binding ArrowHeadShape, Source={x:Static playground:EditorSettings.Instance}}"
+                                                       Spacing="{Binding ConnectionSpacing, Source={x:Static playground:EditorSettings.Instance}}">
+                                        <connect:Connection.Style>
+                                            <Style TargetType="connect:Connection" BasedOn="{StaticResource {x:Type connect:Connection}}">
                                                 <Setter Property="Stroke" Value="{DynamicResource Connection.StrokeBrush}"/>
                                                 <Setter Property="Fill" Value="{DynamicResource Connection.StrokeBrush}"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Source.Shape}" Value="{x:Static local:ConnectorShape.Square}">
+                                                    <DataTrigger Binding="{Binding Source.Shape}" Value="{x:Static editor:ConnectorShape.Square}">
                                                         <Setter Property="Stroke" Value="{StaticResource SquareConnectorColor}"/>
                                                         <Setter Property="Fill" Value="{StaticResource SquareConnectorColor}"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Source.Shape}" Value="{x:Static local:ConnectorShape.Triangle}">
+                                                    <DataTrigger Binding="{Binding Source.Shape}" Value="{x:Static editor:ConnectorShape.Triangle}">
                                                         <Setter Property="Stroke" Value="{StaticResource TriangleConnectorColor}"/>
                                                         <Setter Property="Fill" Value="{StaticResource TriangleConnectorColor}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </nodify:Connection.Style>
-                                    </nodify:Connection>
+                                        </connect:Connection.Style>
+                                    </connect:Connection>
                                     <Border Background="{TemplateBinding Background}"
                                             Canvas.Left="{Binding TargetAnchor.X, RelativeSource={RelativeSource TemplatedParent}}"
                                             Canvas.Top="{Binding TargetAnchor.Y, RelativeSource={RelativeSource TemplatedParent}}"
-                                            Visibility="{TemplateBinding EnablePreview, Converter={shared:BooleanToVisibilityConverter}}"
+                                            Visibility="{TemplateBinding EnablePreview, Converter={c:BooleanToVisibilityConverter}}"
                                             Padding="{TemplateBinding Padding}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -281,24 +285,24 @@
                     </Setter>
                 </Style>
 
-                <Style TargetType="{x:Type nodify:Connector}"
-                       BasedOn="{StaticResource {x:Type nodify:Connector}}">
+                <Style TargetType="{x:Type connect:Connector}"
+                       BasedOn="{StaticResource {x:Type connect:Connector}}">
                     <Setter Property="Anchor"
                             Value="{Binding Anchor, Mode=OneWayToSource}" />
                     <Setter Property="IsConnected"
                             Value="{Binding IsConnected}" />
                 </Style>
 
-                <Style TargetType="{x:Type nodify:NodeInput}"
-                       BasedOn="{StaticResource {x:Type nodify:NodeInput}}">
+                <Style TargetType="{x:Type node:NodeInput}"
+                       BasedOn="{StaticResource {x:Type node:NodeInput}}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Shape}" 
-                                     Value="{x:Static local:ConnectorShape.Square}">
+                                     Value="{x:Static editor:ConnectorShape.Square}">
                             <Setter Property="ConnectorTemplate" Value="{StaticResource SquareConnector}" />
                             <Setter Property="BorderBrush" Value="{StaticResource SquareConnectorColor}"/>
                             <Setter Property="HeaderTemplate">
                                 <Setter.Value>
-                                    <DataTemplate DataType="{x:Type local:ConnectorViewModel}">
+                                    <DataTemplate DataType="{x:Type editor:ConnectorViewModel}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding Title}" Margin="0 0 5 0" />
                                             <TextBox Text="{Binding MaxConnections}" MinWidth="30" />
@@ -308,18 +312,18 @@
                             </Setter>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Shape}" 
-                                     Value="{x:Static local:ConnectorShape.Triangle}">
+                                     Value="{x:Static editor:ConnectorShape.Triangle}">
                             <Setter Property="ConnectorTemplate" Value="{StaticResource TriangleConnector}" />
                             <Setter Property="BorderBrush" Value="{StaticResource TriangleConnectorColor}"/>
                             <Setter Property="HeaderTemplate">
                                 <Setter.Value>
-                                    <DataTemplate DataType="{x:Type local:ConnectorViewModel}">
+                                    <DataTemplate DataType="{x:Type editor:ConnectorViewModel}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding Title}" Margin="0 0 5 0" />
                                             <ComboBox DisplayMemberPath="Name"
                                                       SelectedValuePath="Value"
                                                       SelectedValue="{Binding Shape}"
-                                                      ItemsSource="{Binding Shape, Converter={shared:EnumValuesConverter}}" />
+                                                      ItemsSource="{Binding Shape, Converter={c:EnumValuesConverter}}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </Setter.Value>
@@ -328,7 +332,7 @@
                     </Style.Triggers>
                     <Setter Property="HeaderTemplate">
                         <Setter.Value>
-                            <DataTemplate DataType="{x:Type local:ConnectorViewModel}">
+                            <DataTemplate DataType="{x:Type editor:ConnectorViewModel}">
                                 <TextBlock Text="{Binding Title}" />
                             </DataTemplate>
                         </Setter.Value>
@@ -341,16 +345,16 @@
                             Value="{Binding IsConnected}" />
                 </Style>
 
-                <Style TargetType="{x:Type nodify:NodeOutput}"
-                       BasedOn="{StaticResource {x:Type nodify:NodeOutput}}">
+                <Style TargetType="{x:Type node:NodeOutput}"
+                       BasedOn="{StaticResource {x:Type node:NodeOutput}}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Shape}" 
-                                     Value="{x:Static local:ConnectorShape.Square}">
+                                     Value="{x:Static editor:ConnectorShape.Square}">
                             <Setter Property="ConnectorTemplate" Value="{StaticResource SquareConnector}" />
                             <Setter Property="BorderBrush" Value="{StaticResource SquareConnectorColor}"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Shape}" 
-                                     Value="{x:Static local:ConnectorShape.Triangle}">
+                                     Value="{x:Static editor:ConnectorShape.Triangle}">
                             <Setter Property="ConnectorTemplate" Value="{StaticResource TriangleConnector}" />
                             <Setter Property="BorderBrush" Value="{StaticResource TriangleConnectorColor}"/>
                         </DataTrigger>
@@ -363,18 +367,18 @@
                             Value="{Binding IsConnected}" />
                 </Style>
 
-                <DataTemplate DataType="{x:Type local:KnotNodeViewModel}">
-                    <nodify:KnotNode Content="{Binding Connector}" />
+                <DataTemplate DataType="{x:Type editor:KnotNodeViewModel}">
+                    <node:KnotNode Content="{Binding Connector}" />
                 </DataTemplate>
 
-                <DataTemplate DataType="{x:Type local:CommentNodeViewModel}">
-                    <nodify:GroupingNode ActualSize="{Binding Size}"
+                <DataTemplate DataType="{x:Type editor:CommentNodeViewModel}">
+                    <node:GroupingNode ActualSize="{Binding Size}"
                                          Header="{Binding Title}"
-                                         MovementMode="{Binding GroupingNodeMovement, Mode=TwoWay, Source={x:Static local:EditorSettings.Instance}}"/>
+                                         MovementMode="{Binding GroupingNodeMovement, Mode=TwoWay, Source={x:Static playground:EditorSettings.Instance}}"/>
                 </DataTemplate>
 
-                <DataTemplate DataType="{x:Type local:FlowNodeViewModel}">
-                    <nodify:Node Input="{Binding Input}"
+                <DataTemplate DataType="{x:Type editor:FlowNodeViewModel}">
+                    <node:Node Input="{Binding Input}"
                                  Output="{Binding Output}"
                                  Header="{Binding Title}" />
                 </DataTemplate>
@@ -400,7 +404,7 @@
         </nodify:NodifyEditor>
 
         <Grid Background="{StaticResource LargeGridLinesDrawingBrush}"
-              Visibility="{Binding ShowGridLines, Source={x:Static local:PlaygroundSettings.Instance}, Converter={shared:BooleanToVisibilityConverter}}"
+              Visibility="{Binding ShowGridLines, Source={x:Static playground:PlaygroundSettings.Instance}, Converter={c:BooleanToVisibilityConverter}}"
               Panel.ZIndex="-2" />
     </Grid>
 

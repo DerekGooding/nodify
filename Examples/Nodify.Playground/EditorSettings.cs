@@ -1,4 +1,6 @@
-﻿using Nodify.Shared;
+﻿using Nodify.Connections;
+using Nodify.Nodes;
+using Nodify.Shared;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 

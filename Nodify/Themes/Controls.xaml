@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Nodify">
+                    xmlns:local="clr-namespace:Nodify"
+                    xmlns:node="clr-namespace:Nodify.Nodes"
+                    xmlns:connect="clr-namespace:Nodify.Connections"
+                    xmlns:h="clr-namespace:Nodify.Helpers">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Brushes.xaml" />
@@ -42,7 +45,7 @@
     
     <!--DECORATOR CONTAINER-->
     
-    <local:UnscaleTransformConverter x:Key="UnscaleTransformConverter" />
+    <h:UnscaleTransformConverter x:Key="UnscaleTransformConverter" />
 
     <Style TargetType="{x:Type local:DecoratorContainer}"
            BasedOn="{StaticResource {x:Type local:DecoratorContainer}}">
@@ -52,8 +55,8 @@
 
     <!--NODE-->
 
-    <Style TargetType="{x:Type local:Node}"
-           BasedOn="{StaticResource {x:Type local:Node}}">
+    <Style TargetType="{x:Type node:Node}"
+           BasedOn="{StaticResource {x:Type node:Node}}">
         <Setter Property="Background"
                 Value="{StaticResource Node.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -77,8 +80,8 @@
 
     <!--STATE NODE-->
 
-    <Style TargetType="{x:Type local:StateNode}"
-           BasedOn="{StaticResource {x:Type local:StateNode}}">
+    <Style TargetType="{x:Type node:StateNode}"
+           BasedOn="{StaticResource {x:Type node:StateNode}}">
         <Setter Property="Background"
                 Value="{StaticResource StateNode.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -91,8 +94,8 @@
 
     <!--GROUPING NODE-->
 
-    <Style TargetType="{x:Type local:GroupingNode}"
-           BasedOn="{StaticResource {x:Type local:GroupingNode}}">
+    <Style TargetType="{x:Type node:GroupingNode}"
+           BasedOn="{StaticResource {x:Type node:GroupingNode}}">
         <Setter Property="Background"
                 Value="{StaticResource GroupingNode.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -105,8 +108,8 @@
 
     <!--KNOT NODE-->
 
-    <Style TargetType="{x:Type local:KnotNode}"
-           BasedOn="{StaticResource {x:Type local:KnotNode}}">
+    <Style TargetType="{x:Type node:KnotNode}"
+           BasedOn="{StaticResource {x:Type node:KnotNode}}">
         <Setter Property="Background"
                 Value="{StaticResource KnotNode.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -117,8 +120,8 @@
 
     <!--CONNECTOR-->
 
-    <Style TargetType="{x:Type local:Connector}"
-           BasedOn="{StaticResource {x:Type local:Connector}}">
+    <Style TargetType="{x:Type connect:Connector}"
+           BasedOn="{StaticResource {x:Type connect:Connector}}">
         <Setter Property="Background"
                 Value="{StaticResource Connector.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -129,8 +132,8 @@
 
     <!--NODE INPUT-->
 
-    <Style TargetType="{x:Type local:NodeInput}"
-           BasedOn="{StaticResource {x:Type local:NodeInput}}">
+    <Style TargetType="{x:Type node:NodeInput}"
+           BasedOn="{StaticResource {x:Type node:NodeInput}}">
         <Setter Property="Background"
                 Value="{StaticResource NodeInput.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -141,8 +144,8 @@
 
     <!--NODE OUTPUT-->
 
-    <Style TargetType="{x:Type local:NodeOutput}"
-           BasedOn="{StaticResource {x:Type local:NodeOutput}}">
+    <Style TargetType="{x:Type node:NodeOutput}"
+           BasedOn="{StaticResource {x:Type node:NodeOutput}}">
         <Setter Property="Background"
                 Value="{StaticResource NodeOutput.BackgroundBrush}" />
         <Setter Property="Foreground"
@@ -153,8 +156,8 @@
 
     <!--CONNECTION-->
 
-    <Style TargetType="{x:Type local:Connection}"
-           BasedOn="{StaticResource {x:Type local:Connection}}">
+    <Style TargetType="{x:Type connect:Connection}"
+           BasedOn="{StaticResource {x:Type connect:Connection}}">
         <Setter Property="Stroke"
                 Value="{StaticResource Connection.StrokeBrush}" />
         <Setter Property="Fill"
@@ -163,8 +166,8 @@
 
     <!--LINE CONNECTION-->
 
-    <Style TargetType="{x:Type local:LineConnection}"
-           BasedOn="{StaticResource {x:Type local:LineConnection}}">
+    <Style TargetType="{x:Type connect:LineConnection}"
+           BasedOn="{StaticResource {x:Type connect:LineConnection}}">
         <Setter Property="Stroke"
                 Value="{StaticResource LineConnection.StrokeBrush}" />
         <Setter Property="Fill"
@@ -173,8 +176,8 @@
 
     <!--CIRCUIT CONNECTION-->
 
-    <Style TargetType="{x:Type local:CircuitConnection}"
-           BasedOn="{StaticResource {x:Type local:CircuitConnection}}">
+    <Style TargetType="{x:Type connect:CircuitConnection}"
+           BasedOn="{StaticResource {x:Type connect:CircuitConnection}}">
         <Setter Property="Stroke"
                 Value="{StaticResource CircuitConnection.StrokeBrush}" />
         <Setter Property="Fill"
@@ -183,8 +186,8 @@
 
     <!--PENDING CONNECTION-->
 
-    <Style TargetType="{x:Type local:PendingConnection}"
-           BasedOn="{StaticResource {x:Type local:PendingConnection}}">
+    <Style TargetType="{x:Type connect:PendingConnection}"
+           BasedOn="{StaticResource {x:Type connect:PendingConnection}}">
         <Setter Property="Stroke"
                 Value="{StaticResource PendingConnection.StrokeBrush}" />
         <Setter Property="BorderBrush"

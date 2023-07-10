@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Nodify.Connections;
+using Nodify.EditorStates;
+using Nodify.Events;
+using Nodify.Helpers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -95,7 +99,7 @@ namespace Nodify
         {
             var editor = (NodifyEditor)d;
 
-            var num = (double)value;
+            double num = (double)value;
             double minimum = editor.MinViewportZoom;
             if (num < minimum)
             {
@@ -133,12 +137,12 @@ namespace Nodify
         /// <summary>
         /// Gets the transform used to offset the viewport.
         /// </summary>
-        protected readonly TranslateTransform TranslateTransform = new TranslateTransform();
+        protected readonly TranslateTransform TranslateTransform = new();
 
         /// <summary>
         /// Gets the transform used to zoom on the viewport.
         /// </summary>
-        protected readonly ScaleTransform ScaleTransform = new ScaleTransform();
+        protected readonly ScaleTransform ScaleTransform = new();
 
         /// <summary>
         /// Gets the transform that is applied to all child controls.
@@ -213,19 +217,17 @@ namespace Nodify
 
         private void ApplyRenderingOptimizations()
         {
-            if (ItemsHost != null)
+            if (ItemsHost == null) return;
+            if (EnableRenderingContainersOptimizations && Items.Count >= OptimizeRenderingMinimumContainers)
             {
-                if (EnableRenderingContainersOptimizations && Items.Count >= OptimizeRenderingMinimumContainers)
-                {
-                    double zoom = ViewportZoom;
-                    double availableZoomIn = 1.0 - MinViewportZoom;
-                    bool shouldCache = zoom / availableZoomIn <= OptimizeRenderingZoomOutPercent;
-                    ItemsHost.CacheMode = shouldCache ? new BitmapCache(1.0 / zoom) : null;
-                }
-                else
-                {
-                    ItemsHost.CacheMode = null;
-                }
+                double zoom = ViewportZoom;
+                double availableZoomIn = 1.0 - MinViewportZoom;
+                bool shouldCache = zoom / availableZoomIn <= OptimizeRenderingZoomOutPercent;
+                ItemsHost.CacheMode = shouldCache ? new BitmapCache(1.0 / zoom) : null;
+            }
+            else
+            {
+                ItemsHost.CacheMode = null;
             }
         }
 
@@ -476,7 +478,7 @@ namespace Nodify
         }
 
         /// <summary>
-        /// Gets of sets the <see cref="FrameworkElement.DataContext"/> of the <see cref="Nodify.PendingConnection"/>.
+        /// Gets of sets the <see cref="FrameworkElement.DataContext"/> of the <see cref="Connections.PendingConnection"/>.
         /// </summary>
         public object PendingConnection
         {
@@ -535,7 +537,7 @@ namespace Nodify
         public static readonly DependencyProperty ItemsSelectCompletedCommandProperty = DependencyProperty.Register(nameof(ItemsSelectCompletedCommand), typeof(ICommand), typeof(NodifyEditor));
 
         /// <summary>
-        /// Invoked when the <see cref="Nodify.PendingConnection"/> is completed. <br />
+        /// Invoked when the <see cref="Connections.PendingConnection"/> is completed. <br />
         /// Use <see cref="PendingConnection.StartedCommand"/> if you want to control the visibility of the connection from the viewmodel. <br />
         /// Parameter is <see cref="PendingConnection.Source"/>.
         /// </summary>
@@ -546,7 +548,7 @@ namespace Nodify
         }
 
         /// <summary>
-        /// Invoked when the <see cref="Nodify.PendingConnection"/> is completed. <br />
+        /// Invoked when the <see cref="Connections.PendingConnection"/> is completed. <br />
         /// Use <see cref="PendingConnection.CompletedCommand"/> if you want to control the visibility of the connection from the viewmodel. <br />
         /// Parameter is <see cref="Tuple{T, U}"/> where <see cref="Tuple{T, U}.Item1"/> is the <see cref="PendingConnection.Source"/> and <see cref="Tuple{T, U}.Item2"/> is <see cref="PendingConnection.Target"/>.
         /// </summary>
@@ -664,7 +666,7 @@ namespace Nodify
         /// <summary>
         /// Gets the panel that holds all the <see cref="ItemContainer"/>s.
         /// </summary>
-        protected internal Panel ItemsHost { get; private set; }
+        protected internal Panel? ItemsHost { get; private set; }
 
         private IDraggingStrategy? _draggingStrategy;
         private DispatcherTimer? _autoPanningTimer;
@@ -680,7 +682,7 @@ namespace Nodify
                 IList selectedItems = base.SelectedItems;
                 var selectedContainers = new List<ItemContainer>(selectedItems.Count);
 
-                for (var i = 0; i < selectedItems.Count; i++)
+                for (int i = 0; i < selectedItems.Count; i++)
                 {
                     var container = (ItemContainer)ItemContainerGenerator.ContainerFromItem(selectedItems[i]);
                     selectedContainers.Add(container);
@@ -960,7 +962,7 @@ namespace Nodify
 
         #region State Handling
 
-        private readonly Stack<EditorState> _states = new Stack<EditorState>();
+        private readonly Stack<EditorState> _states = new();
 
         /// <summary>The current state of the editor.</summary>
         public EditorState State => _states.Peek();
@@ -1096,7 +1098,7 @@ namespace Nodify
             selectedItems.Clear();
             if (newValue != null)
             {
-                for (var i = 0; i < newValue.Count; i++)
+                for (int i = 0; i < newValue.Count; i++)
                 {
                     selectedItems.Add(newValue[i]);
                 }
@@ -1117,7 +1119,7 @@ namespace Nodify
                     if (newItems != null)
                     {
                         IList selectedItems = base.SelectedItems;
-                        for (var i = 0; i < newItems.Count; i++)
+                        for (int i = 0; i < newItems.Count; i++)
                         {
                             selectedItems.Add(newItems[i]);
                         }
@@ -1129,7 +1131,7 @@ namespace Nodify
                     if (oldItems != null)
                     {
                         IList selectedItems = base.SelectedItems;
-                        for (var i = 0; i < oldItems.Count; i++)
+                        for (int i = 0; i < oldItems.Count; i++)
                         {
                             selectedItems.Remove(oldItems[i]);
                         }
@@ -1147,7 +1149,7 @@ namespace Nodify
             if (selected != null)
             {
                 IList added = e.AddedItems;
-                for (var i = 0; i < added.Count; i++)
+                for (int i = 0; i < added.Count; i++)
                 {
                     // Ensure no duplicates are added
                     if (!selected.Contains(added[i]))
@@ -1157,7 +1159,7 @@ namespace Nodify
                 }
 
                 IList removed = e.RemovedItems;
-                for (var i = 0; i < removed.Count; i++)
+                for (int i = 0; i < removed.Count; i++)
                 {
                     selected.Remove(removed[i]);
                 }
@@ -1175,7 +1177,7 @@ namespace Nodify
 
             IsSelecting = true;
             BeginUpdateSelectedItems();
-            for (var i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 var container = (ItemContainer)ItemContainerGenerator.ContainerFromIndex(i);
                 if (container.IsPreviewingSelection == true)
@@ -1195,7 +1197,7 @@ namespace Nodify
         internal void ClearPreviewingSelection()
         {
             ItemCollection items = Items;
-            for (var i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 var container = (ItemContainer)ItemContainerGenerator.ContainerFromIndex(i);
                 container.IsPreviewingSelection = null;
@@ -1214,7 +1216,7 @@ namespace Nodify
 
             IsSelecting = true;
             BeginUpdateSelectedItems();
-            for (var i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 var container = (ItemContainer)ItemContainerGenerator.ContainerFromIndex(i);
 
@@ -1253,7 +1255,7 @@ namespace Nodify
 
             IsSelecting = true;
             BeginUpdateSelectedItems();
-            for (var i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 var container = (ItemContainer)ItemContainerGenerator.ContainerFromIndex(i);
                 if (container.IsSelectableInArea(area, fit))
@@ -1276,7 +1278,7 @@ namespace Nodify
 
             IsSelecting = true;
             BeginUpdateSelectedItems();
-            for (var i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 var container = (ItemContainer)ItemContainerGenerator.ContainerFromItem(items[i]);
                 if (container.IsSelectableInArea(area, fit))
@@ -1312,7 +1314,7 @@ namespace Nodify
                 IsBulkUpdatingItems = false;
 
                 // Draw the containers at the new position.
-                ItemsHost.InvalidateArrange();
+                ItemsHost?.InvalidateArrange();
             }
 
             if (ItemsDragCompletedCommand?.CanExecute(null) ?? false)

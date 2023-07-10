@@ -1,18 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Nodify">
+                    xmlns:node="clr-namespace:Nodify.Nodes">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     <DataTemplate x:Key="DefaultInputConnectorTemplate">
-        <local:NodeInput />
+        <node:NodeInput />
     </DataTemplate>
 
     <DataTemplate x:Key="DefaultOutputConnectorTemplate">
-        <local:NodeOutput />
+        <node:NodeOutput />
     </DataTemplate>
 
-    <Style TargetType="{x:Type local:Node}">
+    <Style TargetType="{x:Type node:Node}">
         <Setter Property="Background"
                 Value="#2D2D30" />
         <Setter Property="ContentBrush"
@@ -43,7 +43,7 @@
                 Value="{StaticResource DefaultOutputConnectorTemplate}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Node}">
+                <ControlTemplate TargetType="{x:Type node:Node}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
