@@ -1,12 +1,8 @@
 ﻿using System.Windows.Controls;
 
-namespace Nodify.Calculator
+namespace Nodify.Calculator;
+
+public partial class OperationsMenuView : UserControl
 {
-    public partial class OperationsMenuView : UserControl
-    {
-        public OperationsMenuView()
-        {
-            InitializeComponent();
-        }
-    }
+    public OperationsMenuView() => InitializeComponent();
 }

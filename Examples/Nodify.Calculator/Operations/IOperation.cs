@@ -1,7 +1,6 @@
-﻿namespace Nodify.Calculator
+﻿namespace Nodify.Calculator.Operations;
+
+public interface IOperation
 {
-    public interface IOperation
-    {
-        double Execute(params double[] operands);
-    }
+    double Execute(params double[] operands);
 }

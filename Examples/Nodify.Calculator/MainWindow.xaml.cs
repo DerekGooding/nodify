@@ -1,13 +1,8 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 
-namespace Nodify.Calculator
+namespace Nodify.Calculator;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-    }
+    public MainWindow() => InitializeComponent();
 }

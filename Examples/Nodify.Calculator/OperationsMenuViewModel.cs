@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nodify.Calculator.Operations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -84,7 +85,7 @@ namespace Nodify.Calculator
             if (pending.IsVisible)
             {
                 var connector = pending.Source.IsInput ? op.Output : op.Input.FirstOrDefault();
-                if (connector != null && _calculator.CanCreateConnection(pending.Source, connector))
+                if (connector != null && CalculatorViewModel.CanCreateConnection(pending.Source, connector))
                 {
                     _calculator.CreateConnection(pending.Source, connector);
                 }

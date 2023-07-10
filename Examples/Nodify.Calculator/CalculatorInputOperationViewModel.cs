@@ -1,30 +1,29 @@
-﻿namespace Nodify.Calculator
+﻿namespace Nodify.Calculator;
+
+public class CalculatorInputOperationViewModel : OperationViewModel
 {
-    public class CalculatorInputOperationViewModel : OperationViewModel
+    public CalculatorInputOperationViewModel()
     {
-        public CalculatorInputOperationViewModel()
-        {
-            AddOutputCommand = new RequeryCommand(
-                () => Output.Add(new ConnectorViewModel
-                {
-                    Title = $"In {Output.Count}"
-                }),
-                () => Output.Count < 10);
-
-            RemoveOutputCommand = new RequeryCommand(
-                () => Output.RemoveAt(Output.Count - 1),
-                () => Output.Count > 1);
-
-            Output.Add(new ConnectorViewModel
+        AddOutputCommand = new RequeryCommand(
+            () => Output.Add(new ConnectorViewModel
             {
                 Title = $"In {Output.Count}"
-            });
-        }
+            }),
+            () => Output.Count < 10);
 
-        public new NodifyObservableCollection<ConnectorViewModel> Output { get; set; } =
-            new NodifyObservableCollection<ConnectorViewModel>();
+        RemoveOutputCommand = new RequeryCommand(
+            () => Output.RemoveAt(Output.Count - 1),
+            () => Output.Count > 1);
 
-        public INodifyCommand AddOutputCommand { get; }
-        public INodifyCommand RemoveOutputCommand { get; }
+        Output.Add(new ConnectorViewModel
+        {
+            Title = $"In {Output.Count}"
+        });
     }
+
+    public new NodifyObservableCollection<ConnectorViewModel> Output { get; set; } =
+        new NodifyObservableCollection<ConnectorViewModel>();
+
+    public INodifyCommand AddOutputCommand { get; }
+    public INodifyCommand RemoveOutputCommand { get; }
 }

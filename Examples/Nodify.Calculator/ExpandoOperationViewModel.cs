@@ -1,33 +1,32 @@
-﻿namespace Nodify.Calculator
+﻿namespace Nodify.Calculator;
+
+public class ExpandoOperationViewModel : OperationViewModel
 {
-    public class ExpandoOperationViewModel : OperationViewModel
+    public ExpandoOperationViewModel()
     {
-        public ExpandoOperationViewModel()
-        {
-            AddInputCommand = new RequeryCommand(
-                () => Input.Add(new ConnectorViewModel()),
-                () => Input.Count < MaxInput);
+        AddInputCommand = new RequeryCommand(
+            () => Input.Add(new ConnectorViewModel()),
+            () => Input.Count < MaxInput);
 
-            RemoveInputCommand = new RequeryCommand(
-                () => Input.RemoveAt(Input.Count - 1),
-                () => Input.Count > MinInput);
-        }
+        RemoveInputCommand = new RequeryCommand(
+            () => Input.RemoveAt(Input.Count - 1),
+            () => Input.Count > MinInput);
+    }
 
-        public INodifyCommand AddInputCommand { get; }
-        public INodifyCommand RemoveInputCommand { get; }
+    public INodifyCommand AddInputCommand { get; }
+    public INodifyCommand RemoveInputCommand { get; }
 
-        private uint _minInput = 0;
-        public uint MinInput
-        {
-            get => _minInput;
-            set => SetProperty(ref _minInput, value);
-        }
+    private uint _minInput = 0;
+    public uint MinInput
+    {
+        get => _minInput;
+        set => SetProperty(ref _minInput, value);
+    }
 
-        private uint _maxInput = uint.MaxValue;
-        public uint MaxInput
-        {
-            get => _maxInput;
-            set => SetProperty(ref _maxInput, value);
-        }
+    private uint _maxInput = uint.MaxValue;
+    public uint MaxInput
+    {
+        get => _maxInput;
+        set => SetProperty(ref _maxInput, value);
     }
 }
