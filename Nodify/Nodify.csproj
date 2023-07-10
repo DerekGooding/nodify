@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>net6-windows;net5-windows;netcoreapp3.1;net48;net472</TargetFrameworks>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -18,9 +18,9 @@
     <PackageTags>wpf mvvm node-editor controls</PackageTags>
     <Version>5.0.2</Version>
     <PackageReleaseNotes>
-      > - Bugfixes:
-      >   - Fixed NodeOutput content horizontal alignment
-      >   - Fixed Connector not opening Context Menu
+      &gt; - Bugfixes:
+      &gt;   - Fixed NodeOutput content horizontal alignment
+      &gt;   - Fixed Connector not opening Context Menu
     </PackageReleaseNotes>
     <AssemblyOriginatorKeyFile>..\build\Nodify.snk</AssemblyOriginatorKeyFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>

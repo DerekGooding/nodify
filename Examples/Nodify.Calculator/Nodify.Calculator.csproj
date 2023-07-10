@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net6-windows;net5-windows;netcoreapp3.1;net48;net472</TargetFrameworks>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,7 +10,7 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="StringMath" Version="4.0.0" />
+    <PackageReference Include="StringMath" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
