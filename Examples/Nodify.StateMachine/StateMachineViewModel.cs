@@ -1,4 +1,7 @@
 ﻿using Nodify.Shared;
+using Nodify.StateMachine.Helpers;
+using Nodify.StateMachine.Runner;
+using Nodify.StateMachine.Runner.Actions;
 using System;
 using System.Linq;
 using System.Windows;
@@ -62,21 +65,21 @@ namespace Nodify.StateMachine
             PauseCommand = new RequeryCommand(Runner.TogglePause, () => IsRunning);
         }
 
-        private NodifyObservableCollection<StateViewModel> _states = new NodifyObservableCollection<StateViewModel>();
+        private NodifyObservableCollection<StateViewModel> _states = new();
         public NodifyObservableCollection<StateViewModel> States
         {
             get => _states;
             set => SetProperty(ref _states, value);
         }
 
-        private NodifyObservableCollection<StateViewModel> _selectedStates = new NodifyObservableCollection<StateViewModel>();
+        private NodifyObservableCollection<StateViewModel> _selectedStates = new();
         public NodifyObservableCollection<StateViewModel> SelectedStates
         {
             get => _selectedStates;
             set => SetProperty(ref _selectedStates, value);
         }
 
-        private NodifyObservableCollection<TransitionViewModel> _connections = new NodifyObservableCollection<TransitionViewModel>();
+        private NodifyObservableCollection<TransitionViewModel> _connections = new();
         public NodifyObservableCollection<TransitionViewModel> Transitions
         {
             get => _connections;
@@ -192,7 +195,7 @@ namespace Nodify.StateMachine
             Transitions[1].Condition!.Input[0].Value = welcomeKey;
             Transitions[1].Condition!.Input[1].ValueIsKey = false;
             Transitions[1].Condition!.Input[1].Type = BlackboardKeyType.String;
-            Transitions[1].Condition!.Input[1].Value = currentDelayKey.Name;
+            Transitions[1].Condition!.Input[1].Value = currentDelayKey?.Name;
 
             Transitions.Add(new TransitionViewModel
             {

@@ -1,4 +1,5 @@
 ﻿using Nodify.Shared;
+using Nodify.StateMachine.Runner;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,11 @@ namespace Nodify.StateMachine
 {
     public class StateMachineRunnerViewModel : ObservableObject
     {
-        private StateMachine? _stateMachine;
+        private Runner.StateMachine? _stateMachine;
         private StateViewModel? _activeState;
         private TransitionViewModel? _activeTransition;
-        private readonly DebugBlackboardDecorator _debugger = new DebugBlackboardDecorator();
-        private readonly Blackboard _original = new Blackboard();
+        private readonly DebugBlackboardDecorator _debugger = new();
+        private readonly Blackboard _original = new();
 
         protected StateMachineViewModel StateMachineViewModel { get; }
 
@@ -53,7 +54,7 @@ namespace Nodify.StateMachine
         {
             NodesVisited = 0;
 
-            _stateMachine = new StateMachine(StateMachineViewModel.States[0].Id, CreateStates(StateMachineViewModel.States), CreateBlackboard(StateMachineViewModel.Blackboard));
+            _stateMachine = new Runner.StateMachine(StateMachineViewModel.States[0].Id, CreateStates(StateMachineViewModel.States), CreateBlackboard(StateMachineViewModel.Blackboard));
 
             _stateMachine.StateTransition += HandleStateTransition;
             _stateMachine.StateChanged += HandleStateChange;
@@ -147,7 +148,7 @@ namespace Nodify.StateMachine
             return result;
         }
 
-        private IBlackboardCondition? CreateCondition(BlackboardItemViewModel? condition)
+        private static IBlackboardCondition? CreateCondition(BlackboardItemViewModel? condition)
         {
             if (condition?.Type != null && typeof(IBlackboardCondition).IsAssignableFrom(condition.Type))
             {
@@ -162,7 +163,7 @@ namespace Nodify.StateMachine
             return default;
         }
 
-        private IBlackboardAction? CreateAction(BlackboardItemViewModel? action)
+        private static IBlackboardAction? CreateAction(BlackboardItemViewModel? action)
         {
             if (action?.Type != null && typeof(IBlackboardAction).IsAssignableFrom(action.Type))
             {
@@ -178,7 +179,7 @@ namespace Nodify.StateMachine
             return default;
         }
 
-        private void InitializeKeys(NodifyObservableCollection<BlackboardKeyViewModel> keys, object? instance, Type type)
+        private static void InitializeKeys(NodifyObservableCollection<BlackboardKeyViewModel> keys, object? instance, Type type)
         {
             for (int i = 0; i < keys.Count; i++)
             {
@@ -200,7 +201,7 @@ namespace Nodify.StateMachine
 
         private Blackboard CreateBlackboard(BlackboardViewModel blackboard)
         {
-            Blackboard result = new Blackboard();
+            Blackboard result = new();
             for (int i = 0; i < blackboard.Keys.Count; i++)
             {
                 var key = blackboard.Keys[i];
@@ -216,7 +217,7 @@ namespace Nodify.StateMachine
             return _debugger;
         }
 
-        private BlackboardProperty CreateActionValue(BlackboardKeyViewModel key)
+        private static BlackboardProperty CreateActionValue(BlackboardKeyViewModel key)
         {
             if (key.Value is BlackboardKeyViewModel bkv)
             {

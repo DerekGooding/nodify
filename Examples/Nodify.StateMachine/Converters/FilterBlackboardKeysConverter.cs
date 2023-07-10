@@ -5,25 +5,22 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Nodify.StateMachine
+namespace Nodify.StateMachine.Converters;
+
+public class FilterBlackboardKeysConverter : MarkupExtension, IMultiValueConverter
 {
-    public class FilterBlackboardKeysConverter : MarkupExtension, IMultiValueConverter
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        if (values.Length >= 2 && values[0] is IEnumerable<BlackboardKeyViewModel> keys && values[1] is BlackboardKeyType filter)
         {
-            if (values.Length >= 2 && values[0] is IEnumerable<BlackboardKeyViewModel> keys && values[1] is BlackboardKeyType filter)
-            {
-                return keys.Where(k => k.Type == filter || filter == BlackboardKeyType.Object);
-            }
-
-            return values;
+            return keys.Where(k => k.Type == filter || filter == BlackboardKeyType.Object);
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider) => this;
+        return values;
     }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) 
+        => throw new NotImplementedException();
+
+    public override object ProvideValue(IServiceProvider serviceProvider) => this;
 }

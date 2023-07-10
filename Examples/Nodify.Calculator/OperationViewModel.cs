@@ -22,7 +22,7 @@ namespace Nodify.Calculator
             });
         }
 
-        private void OnInputValueChanged(object sender, PropertyChangedEventArgs e)
+        private void OnInputValueChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ConnectorViewModel.Value))
             {
@@ -85,18 +85,13 @@ namespace Nodify.Calculator
 
         protected virtual void OnInputValueChanged()
         {
-            if (Output != null && Operation != null)
+            if (Output == null || Operation == null) return;
+            try
             {
-                try
-                {
-                    var input = Input.Select(i => i.Value).ToArray();
-                    Output.Value = Operation?.Execute(input) ?? 0;
-                }
-                catch
-                {
-
-                }
+                double[] input = Input.Select(i => i.Value).ToArray();
+                Output.Value = Operation?.Execute(input) ?? 0;
             }
+            catch { }
         }
     }
 }

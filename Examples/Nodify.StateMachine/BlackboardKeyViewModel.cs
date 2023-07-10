@@ -1,5 +1,4 @@
-﻿using Nodify.Helpers;
-using Nodify.Shared;
+﻿using Nodify.Shared;
 using System.Collections.Generic;
 
 namespace Nodify.StateMachine
@@ -7,7 +6,7 @@ namespace Nodify.StateMachine
     public class BlackboardKeyViewModel : ObservableObject
     {
         // Cache the key and the input value so we can restore them when swapping input types
-        private readonly Dictionary<bool, object?> _values = new Dictionary<bool, object?>();
+        private readonly Dictionary<bool, object?> _values = new();
 
         public string? PropertyName { get; set; }
 
@@ -50,7 +49,7 @@ namespace Nodify.StateMachine
             get => _valueIsKey;
             set
             {
-                if (SetProperty(ref _valueIsKey, value) && _values.TryGetValue(_valueIsKey, out var existingValue))
+                if (SetProperty(ref _valueIsKey, value) && _values.TryGetValue(_valueIsKey, out object? existingValue))
                 {
                     Value = existingValue;
                 }
@@ -66,33 +65,23 @@ namespace Nodify.StateMachine
 
         private object? GetRealValue(object? value)
         {
-            if (value is string str)
+            if (value is not string str) return value;
+            switch (Type)
             {
-                switch (Type)
-                {
-                    case BlackboardKeyType.Boolean:
-                        bool.TryParse(str, out var b);
-                        value = b;
-                        break;
-
-                    case BlackboardKeyType.Integer:
-                        int.TryParse(str, out var i);
-                        value = i;
-                        break;
-
-                    case BlackboardKeyType.Double:
-                        double.TryParse(str, out var d);
-                        value = d;
-                        break;
-
-                    case BlackboardKeyType.String:
-                    case BlackboardKeyType.Object:
-                        value = str;
-                        break;
-                }
+                case BlackboardKeyType.Boolean:
+                    _ = bool.TryParse(str, out bool b);
+                    return b;
+                case BlackboardKeyType.Integer:
+                    _ = int.TryParse(str, out int i);
+                    return i;
+                case BlackboardKeyType.Double:
+                    _ = double.TryParse(str, out double d);
+                    return d;
+                case BlackboardKeyType.Object:
+                    return str;
+                default:
+                    return value;
             }
-
-            return value;
         }
 
         public static object? GetDefaultValue(BlackboardKeyType type)

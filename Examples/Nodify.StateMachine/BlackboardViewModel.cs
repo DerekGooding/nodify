@@ -5,21 +5,21 @@ namespace Nodify.StateMachine
 {
     public class BlackboardViewModel : ObservableObject
     {
-        private NodifyObservableCollection<BlackboardKeyViewModel> _keys = new NodifyObservableCollection<BlackboardKeyViewModel>();
+        private NodifyObservableCollection<BlackboardKeyViewModel> _keys = new();
         public NodifyObservableCollection<BlackboardKeyViewModel> Keys
         {
             get => _keys;
             set => SetProperty(ref _keys, value);
         }
 
-        private NodifyObservableCollection<BlackboardItemReferenceViewModel> _actions = new NodifyObservableCollection<BlackboardItemReferenceViewModel>();
+        private NodifyObservableCollection<BlackboardItemReferenceViewModel> _actions = new();
         public NodifyObservableCollection<BlackboardItemReferenceViewModel> Actions
         {
             get => _actions;
             set => SetProperty(ref _actions, value);
         }
 
-        private NodifyObservableCollection<BlackboardItemReferenceViewModel> _conditions = new NodifyObservableCollection<BlackboardItemReferenceViewModel>();
+        private NodifyObservableCollection<BlackboardItemReferenceViewModel> _conditions = new();
         public NodifyObservableCollection<BlackboardItemReferenceViewModel> Conditions
         {
             get => _conditions;

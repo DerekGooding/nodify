@@ -1,12 +1,8 @@
 ﻿using System.Windows.Controls;
 
-namespace Nodify.StateMachine
+namespace Nodify.StateMachine;
+
+public partial class BlackboardKeyEditorView : UserControl
 {
-    public partial class BlackboardKeyEditorView : UserControl
-    {
-        public BlackboardKeyEditorView()
-        {
-            InitializeComponent();
-        }
-    }
+    public BlackboardKeyEditorView() => InitializeComponent();
 }

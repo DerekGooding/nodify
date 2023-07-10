@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Nodify.StateMachine"
         xmlns:shared="clr-namespace:Nodify.Shared;assembly=Nodify.Shared"
-        xmlns:c="clr-namespace:Nodify.Shared.Controls;assembly=Nodify.Shared"
         xmlns:node="clr-namespace:Nodify.Nodes;assembly=Nodify"
         xmlns:connect="clr-namespace:Nodify.Connections;assembly=Nodify"
         xmlns:state="clr-namespace:Nodify.StateMachine"
+        xmlns:sc="clr-namespace:Nodify.StateMachine.Converters"
         xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
+        xmlns:c="clr-namespace:Nodify.Shared.Controls;assembly=Nodify.Shared"
+        xmlns:convert="clr-namespace:Nodify.Shared.Converters;assembly=Nodify.Shared"
         ResizeMode="CanResizeWithGrip"
         mc:Ignorable="d"
         Title="State Machine Editor"
@@ -24,7 +25,7 @@
                              DataContext="{Binding}" />
         <shared:BindingProxy x:Key="BlackboardProxy"
                              DataContext="{Binding Blackboard}" />
-        <state:ConnectorOffsetConverter x:Key="ConnectorOffsetConverter" />
+        <sc:ConnectorOffsetConverter x:Key="ConnectorOffsetConverter" />
     </Window.Resources>
 
     <Grid>
@@ -43,7 +44,7 @@
                              ConnectionCompletedCommand="{Binding CreateTransitionCommand}"
                              Grid.Column="1">
             <nodify:NodifyEditor.PendingConnectionTemplate>
-                <DataTemplate DataType="{x:Type local:TransitionViewModel}">
+                <DataTemplate DataType="{x:Type state:TransitionViewModel}">
                     <connect:PendingConnection Source="{Binding Source, Mode=OneWayToSource}"
                                               Target="{Binding Target, Mode=OneWayToSource}"
                                               StrokeDashArray=""
@@ -109,16 +110,16 @@
                                       IsConnected="True"
                                       Anchor="{Binding Anchor, Mode=OneWayToSource}">
                         <node:StateNode.ContentTemplate>
-                            <DataTemplate DataType="{x:Type local:StateViewModel}">
-                                <shared:EditableTextBlock Text="{Binding Name}"
+                            <DataTemplate DataType="{x:Type state:StateViewModel}">
+                                <c:EditableTextBlock Text="{Binding Name}"
                                                           IsEditing="{Binding IsRenaming}"
                                                           IsEditable="{Binding IsEditable}"
                                                           MaxLength="30" />
                             </DataTemplate>
                         </node:StateNode.ContentTemplate>
                         <node:StateNode.Style>
-                            <Style TargetType="{x:Type nodify:StateNode}"
-                                   BasedOn="{StaticResource {x:Type nodify:StateNode}}">
+                            <Style TargetType="{x:Type node:StateNode}"
+                                   BasedOn="{StaticResource {x:Type node:StateNode}}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsEditable}"
                                                  Value="False">
@@ -339,7 +340,7 @@
                     </Grid.RowDefinitions>
 
                     <!--TRANSITIONS-->
-                    <ScrollViewer Visibility="{Binding SelectedState, Converter={shared:BooleanToVisibilityConverter Negate=True}}"
+                    <ScrollViewer Visibility="{Binding SelectedState, Converter={convert:BooleanToVisibilityConverter Negate=True}}"
                                   VerticalScrollBarVisibility="Auto"
                                   Grid.Row="1">
                         <Grid>
@@ -362,7 +363,7 @@
                             <ItemsControl ItemsSource="{Binding Transitions}"
                                           Grid.Row="2">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type local:TransitionViewModel}">
+                                    <DataTemplate DataType="{x:Type state:TransitionViewModel}">
                                         <Expander BorderThickness="0 0 0 1"
                                                   Padding="0 5 0 0"
                                                   IsExpanded="True"
@@ -432,16 +433,16 @@
                                                                   Grid.Row="1"
                                                                   Grid.ColumnSpan="2">
                                                         <ItemsControl.ItemTemplate>
-                                                            <DataTemplate DataType="{x:Type local:BlackboardKeyViewModel}">
-                                                                <local:BlackboardKeyEditorView Margin="0 0 0 2">
-                                                                    <local:BlackboardKeyEditorView.DataContext>
-                                                                        <MultiBinding Converter="{local:BlackboardKeyEditorConverter CanChangeInputType=True}">
+                                                            <DataTemplate DataType="{x:Type state:BlackboardKeyViewModel}">
+                                                                <state:BlackboardKeyEditorView Margin="0 0 0 2">
+                                                                    <state:BlackboardKeyEditorView.DataContext>
+                                                                        <MultiBinding Converter="{sc:BlackboardKeyEditorConverter CanChangeInputType=True}">
                                                                             <Binding Source="{StaticResource BlackboardProxy}"
                                                                                      Path="DataContext.Keys" />
                                                                             <Binding BindsDirectlyToSource="True" />
                                                                         </MultiBinding>
-                                                                    </local:BlackboardKeyEditorView.DataContext>
-                                                                </local:BlackboardKeyEditorView>
+                                                                    </state:BlackboardKeyEditorView.DataContext>
+                                                                </state:BlackboardKeyEditorView>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
@@ -490,7 +491,7 @@
                     </ScrollViewer>
 
                     <!--STATES-->
-                    <Grid Visibility="{Binding SelectedState, Converter={shared:BooleanToVisibilityConverter}}"
+                    <Grid Visibility="{Binding SelectedState, Converter={convert:BooleanToVisibilityConverter}}"
                           Grid.Row="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -504,7 +505,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <shared:EditableTextBlock Text="{Binding SelectedState.Name}"
+                            <c:EditableTextBlock Text="{Binding SelectedState.Name}"
                                                       IsEditing="{Binding IsChecked, ElementName=EditStateName}"
                                                       IsEditable="{Binding SelectedState.IsEditable}"
                                                       Foreground="{DynamicResource ForegroundBrush}"
@@ -512,7 +513,7 @@
                                                       FontSize="16"
                                                       MaxLength="20" />
                             <CheckBox x:Name="EditStateName"
-                                      Visibility="{Binding SelectedState.IsEditable, Converter={shared:BooleanToVisibilityConverter}}"
+                                      Visibility="{Binding SelectedState.IsEditable, Converter={convert:BooleanToVisibilityConverter}}"
                                       Content="{StaticResource EditIcon}"
                                       Style="{StaticResource IconCheckBox}"
                                       Grid.Column="1" />
@@ -523,7 +524,7 @@
                                    Margin="0 2 0 10"
                                    Grid.Row="1" />
 
-                        <ScrollViewer Visibility="{Binding SelectedState.Action, Converter={shared:BooleanToVisibilityConverter}}"
+                        <ScrollViewer Visibility="{Binding SelectedState.Action, Converter={convert:BooleanToVisibilityConverter}}"
                                       VerticalScrollBarVisibility="Auto"
                                       Grid.Row="2">
                             <Grid IsSharedSizeScope="True">
@@ -557,7 +558,7 @@
                                           FontWeight="Bold"
                                           IsExpanded="True"
                                           BorderBrush="{DynamicResource BackgroundBrush}"
-                                          Visibility="{Binding SelectedState.Action.Input.Count, Converter={shared:BooleanToVisibilityConverter}}">
+                                          Visibility="{Binding SelectedState.Action.Input.Count, Converter={convert:BooleanToVisibilityConverter}}">
                                     <Expander.Style>
                                         <Style TargetType="{x:Type Expander}"
                                                BasedOn="{StaticResource {x:Type Expander}}">
@@ -575,16 +576,16 @@
                                     <ItemsControl ItemsSource="{Binding SelectedState.Action.Input}"
                                                   FontWeight="Normal">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type local:BlackboardKeyViewModel}">
-                                                <local:BlackboardKeyEditorView Margin="0 0 0 2">
-                                                    <local:BlackboardKeyEditorView.DataContext>
-                                                        <MultiBinding Converter="{local:BlackboardKeyEditorConverter CanChangeInputType=True}">
+                                            <DataTemplate DataType="{x:Type state:BlackboardKeyViewModel}">
+                                                <state:BlackboardKeyEditorView Margin="0 0 0 2">
+                                                    <state:BlackboardKeyEditorView.DataContext>
+                                                        <MultiBinding Converter="{sc:BlackboardKeyEditorConverter CanChangeInputType=True}">
                                                             <Binding Source="{StaticResource BlackboardProxy}"
                                                                      Path="DataContext.Keys" />
                                                             <Binding BindsDirectlyToSource="True" />
                                                         </MultiBinding>
-                                                    </local:BlackboardKeyEditorView.DataContext>
-                                                </local:BlackboardKeyEditorView>
+                                                    </state:BlackboardKeyEditorView.DataContext>
+                                                </state:BlackboardKeyEditorView>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -600,7 +601,7 @@
                                           BorderThickness="0 0 0 1"
                                           IsExpanded="True"
                                           BorderBrush="{DynamicResource BackgroundBrush}"
-                                          Visibility="{Binding SelectedState.Action.Output.Count, Converter={shared:BooleanToVisibilityConverter}}">
+                                          Visibility="{Binding SelectedState.Action.Output.Count, Converter={convert:BooleanToVisibilityConverter}}">
                                     <Expander.Style>
                                         <Style TargetType="{x:Type Expander}"
                                                BasedOn="{StaticResource {x:Type Expander}}">
@@ -618,16 +619,16 @@
                                     <ItemsControl ItemsSource="{Binding SelectedState.Action.Output}"
                                                   FontWeight="Normal">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type local:BlackboardKeyViewModel}">
-                                                <local:BlackboardKeyEditorView Margin="0 0 0 2">
-                                                    <local:BlackboardKeyEditorView.DataContext>
-                                                        <MultiBinding Converter="{local:BlackboardKeyEditorConverter CanChangeInputType=False}">
+                                            <DataTemplate DataType="{x:Type state:BlackboardKeyViewModel}">
+                                                <state:BlackboardKeyEditorView Margin="0 0 0 2">
+                                                    <state:BlackboardKeyEditorView.DataContext>
+                                                        <MultiBinding Converter="{sc:BlackboardKeyEditorConverter CanChangeInputType=False}">
                                                             <Binding Source="{StaticResource BlackboardProxy}"
                                                                      Path="DataContext.Keys" />
                                                             <Binding BindsDirectlyToSource="True" />
                                                         </MultiBinding>
-                                                    </local:BlackboardKeyEditorView.DataContext>
-                                                </local:BlackboardKeyEditorView>
+                                                    </state:BlackboardKeyEditorView.DataContext>
+                                                </state:BlackboardKeyEditorView>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -649,7 +650,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <shared:EditableTextBlock Text="{Binding Name}"
+                            <c:EditableTextBlock Text="{Binding Name}"
                                                       IsEditing="{Binding IsChecked, ElementName=EditName}"
                                                       Foreground="{DynamicResource ForegroundBrush}"
                                                       FontWeight="Bold"
@@ -679,24 +680,24 @@
                                       Grid.Row="2">
                             <ItemsControl ItemsSource="{Binding Blackboard.Keys}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type local:BlackboardKeyViewModel}">
+                                    <DataTemplate DataType="{x:Type state:BlackboardKeyViewModel}">
                                         <Grid Margin="0 0 0 2">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition />
                                                 <ColumnDefinition SharedSizeGroup="Actions" />
                                             </Grid.ColumnDefinitions>
 
-                                            <local:BlackboardKeyEditorView>
-                                                <local:BlackboardKeyEditorView.DataContext>
-                                                    <MultiBinding Converter="{local:BlackboardKeyEditorConverter CanChangeInputType=False}">
+                                            <state:BlackboardKeyEditorView>
+                                                <state:BlackboardKeyEditorView.DataContext>
+                                                    <MultiBinding Converter="{sc:BlackboardKeyEditorConverter CanChangeInputType=False}">
                                                         <Binding Source="{StaticResource BlackboardProxy}"
                                                                  Path="DataContext.Keys" />
                                                         <Binding BindsDirectlyToSource="True" />
                                                         <Binding ElementName="EditKeyName"
                                                                  Path="IsChecked" />
                                                     </MultiBinding>
-                                                </local:BlackboardKeyEditorView.DataContext>
-                                            </local:BlackboardKeyEditorView>
+                                                </state:BlackboardKeyEditorView.DataContext>
+                                            </state:BlackboardKeyEditorView>
 
                                             <StackPanel Orientation="Horizontal"
                                                         Grid.Column="3">

@@ -3,43 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Nodify.StateMachine"
-             xmlns:shared="clr-namespace:Nodify;assembly=Nodify.Shared"
+             xmlns:state="clr-namespace:Nodify.StateMachine"
+             xmlns:sc="clr-namespace:Nodify.StateMachine.Converters"
              xmlns:c="clr-namespace:Nodify.Shared.Controls;assembly=Nodify.Shared"
+             xmlns:convert="clr-namespace:Nodify.Shared.Converters;assembly=Nodify.Shared"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type={x:Type local:BlackboardKeyEditorViewModel}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance Type={x:Type state:BlackboardKeyEditorViewModel}, IsDesignTimeCreatable=True}"
              d:Background="{DynamicResource PanelBackgroundBrush}"
              d:DesignWidth="400">
     <UserControl.Resources>
         <DataTemplate x:Key="BooleanTemplate"
-                      DataType="{x:Type local:BlackboardKeyEditorViewModel}">
+                      DataType="{x:Type state:BlackboardKeyEditorViewModel}">
             <CheckBox IsChecked="{Binding Target.Value}"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="IntegerTemplate"
-                      DataType="{x:Type local:BlackboardKeyEditorViewModel}">
+                      DataType="{x:Type state:BlackboardKeyEditorViewModel}">
             <TextBox Text="{Binding Target.Value, UpdateSourceTrigger=LostFocus}" />
         </DataTemplate>
         <DataTemplate x:Key="DoubleTemplate"
-                      DataType="{x:Type local:BlackboardKeyEditorViewModel}">
+                      DataType="{x:Type state:BlackboardKeyEditorViewModel}">
             <TextBox Text="{Binding Target.Value, UpdateSourceTrigger=LostFocus}" />
         </DataTemplate>
         <DataTemplate x:Key="StringTemplate"
-                      DataType="{x:Type local:BlackboardKeyEditorViewModel}">
+                      DataType="{x:Type state:BlackboardKeyEditorViewModel}">
             <TextBox Text="{Binding Target.Value, UpdateSourceTrigger=LostFocus}" />
         </DataTemplate>
         <DataTemplate x:Key="ObjectTemplate"
-                      DataType="{x:Type local:BlackboardKeyEditorViewModel}">
+                      DataType="{x:Type state:BlackboardKeyEditorViewModel}">
             <TextBox Text="{Binding Target.Value, UpdateSourceTrigger=LostFocus}"
                      IsEnabled="False" />
         </DataTemplate>
         <DataTemplate x:Key="KeyTemplate"
-                      DataType="{x:Type local:BlackboardKeyEditorViewModel}">
+                      DataType="{x:Type state:BlackboardKeyEditorViewModel}">
             <ComboBox SelectedItem="{Binding Target.Value}"
                       DisplayMemberPath="Name">
                 <ComboBox.ItemsSource>
-                    <MultiBinding Converter="{local:FilterBlackboardKeysConverter}">
+                    <MultiBinding Converter="{sc:FilterBlackboardKeysConverter}">
                         <Binding Path="AvailableKeys" />
                         <Binding Path="Target.Type" />
                         <!--USED TO NOTIFY OF COLLECTION CHANGED-->
@@ -63,7 +64,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <shared:EditableTextBlock Text="{Binding Target.Name}"
+        <c:EditableTextBlock Text="{Binding Target.Name}"
                                   d:Text="My blackboard key"
                                   IsEditing="{Binding IsEditing}"
                                   Foreground="{DynamicResource ForegroundBrush}"
@@ -71,7 +72,7 @@
                                   VerticalContentAlignment="Center"
                                   Margin="1 1 5 1" />
 
-        <ComboBox ItemsSource="{Binding Target.Type, Converter={shared:EnumValuesConverter}}"
+        <ComboBox ItemsSource="{Binding Target.Type, Converter={convert:EnumValuesConverter}}"
                   IsEnabled="{Binding CanChangeKeyType}"
                   SelectedValue="{Binding Target.Type}"
                   SelectedValuePath="Value"
@@ -129,7 +130,7 @@
                 </ContentControl.Style>
             </ContentControl>
 
-            <CheckBox Visibility="{Binding CanChangeInputType, Converter={shared:BooleanToVisibilityConverter}}"
+            <CheckBox Visibility="{Binding CanChangeInputType, Converter={convert:BooleanToVisibilityConverter}}"
                       IsChecked="{Binding Target.ValueIsKey}"
                       ToolTip="Toggle input type"
                       Grid.Column="1">

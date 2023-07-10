@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Nodify.StateMachine
+namespace Nodify.StateMachine;
+
+// Condition or Action reference
+public class BlackboardItemReferenceViewModel
 {
-    // Condition or Action reference
-    public class BlackboardItemReferenceViewModel
-    {
-        public string? Name { get; set; }
-        public Type? Type { get; set; }
-    }
+    public string? Name { get; set; }
+    public Type? Type { get; set; }
 }
