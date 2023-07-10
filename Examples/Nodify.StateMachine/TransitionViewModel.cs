@@ -1,4 +1,6 @@
-﻿namespace Nodify.StateMachine
+﻿using Nodify.Shared;
+
+namespace Nodify.StateMachine
 {
     public class TransitionViewModel : ObservableObject
     {

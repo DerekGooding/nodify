@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nodify.Shared;
+using System;
 using System.Windows;
 
 namespace Nodify.StateMachine

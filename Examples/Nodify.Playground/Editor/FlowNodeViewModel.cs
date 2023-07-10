@@ -1,4 +1,6 @@
-﻿namespace Nodify.Playground.Editor;
+﻿using Nodify.Shared;
+
+namespace Nodify.Playground.Editor;
 
 public class FlowNodeViewModel : NodeViewModel
 {

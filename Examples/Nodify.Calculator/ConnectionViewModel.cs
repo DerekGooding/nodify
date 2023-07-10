@@ -1,4 +1,6 @@
-﻿namespace Nodify.Calculator;
+﻿using Nodify.Shared;
+
+namespace Nodify.Calculator;
 
 public class ConnectionViewModel : ObservableObject
 {

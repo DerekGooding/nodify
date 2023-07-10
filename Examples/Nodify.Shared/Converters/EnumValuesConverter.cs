@@ -3,47 +3,44 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Nodify
-{
-    public readonly struct EnumValue
-    {
-        public EnumValue(string name, object? value)
-        {
-            Name = name;
-            Value = value;
-        }
+namespace Nodify.Shared.Converters;
 
-        public string Name { get; }
-        public object? Value { get; }
+public readonly struct EnumValue
+{
+    public EnumValue(string name, object? value)
+    {
+        Name = name;
+        Value = value;
     }
 
-    public class EnumValuesConverter : MarkupExtension, IValueConverter
+    public string Name { get; }
+    public object? Value { get; }
+}
+
+public class EnumValuesConverter : MarkupExtension, IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        if (value is Enum enumValue)
         {
-            if (value is Enum enumValue)
+            var type = enumValue.GetType();
+            var values = Enum.GetValues(type);
+            string[] names = Enum.GetNames(type);
+
+            EnumValue[] result = new EnumValue[values.Length];
+            for (int i = 0; i < values.Length; i++)
             {
-                var type = enumValue.GetType();
-                var values = Enum.GetValues(type);
-                var names = Enum.GetNames(type);
-
-                EnumValue[] result = new EnumValue[values.Length];
-                for (int i = 0; i < values.Length; i++)
-                {
-                    result[i] = new EnumValue(names[i], values.GetValue(i));
-                }
-
-                return result;
+                result[i] = new EnumValue(names[i], values.GetValue(i));
             }
 
-            return value;
+            return result;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider) => this;
+        return value;
     }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) 
+        => throw new NotImplementedException();
+
+    public override object ProvideValue(IServiceProvider serviceProvider) => this;
 }

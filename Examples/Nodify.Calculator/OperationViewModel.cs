@@ -1,4 +1,5 @@
 ﻿using Nodify.Calculator.Operations;
+using Nodify.Shared;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;

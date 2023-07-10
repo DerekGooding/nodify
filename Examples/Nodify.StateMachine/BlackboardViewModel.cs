@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Nodify.Shared;
+using System.Linq;
 
 namespace Nodify.StateMachine
 {

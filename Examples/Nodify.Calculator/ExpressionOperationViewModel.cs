@@ -1,4 +1,5 @@
-﻿using StringMath;
+﻿using Nodify.Shared;
+using StringMath;
 using System.Collections.Generic;
 using System.Linq;
 

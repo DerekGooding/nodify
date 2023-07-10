@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Nodify.Shared;
+using System.Windows;
 
 namespace Nodify.Calculator;
 
